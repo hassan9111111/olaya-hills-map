@@ -287,7 +287,17 @@ function closeModal() {
 }
 
 function attachDebugToggle() {
-  const btn = document.getElementById("debug-toggle");
+  // Internal QA tool only — hidden from every normal visitor. Add ?debug=1
+  // to the URL to reveal it (e.g. https://.../?debug=1).
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("debug") !== "1") return;
+
+  const btn = document.createElement("button");
+  btn.id = "debug-toggle";
+  btn.className = "debug-toggle-btn";
+  btn.textContent = "تفعيل وضع Debug";
+  document.body.appendChild(btn);
+
   btn.addEventListener("click", () => {
     const isOn = document.body.classList.toggle("debug-mode");
     btn.classList.toggle("is-active", isOn);
