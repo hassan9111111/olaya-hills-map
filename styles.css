@@ -425,3 +425,123 @@ body.debug-mode .block-outline-halo {
     padding-bottom: 10px;
   }
 }
+
+/* ===== Search bar (direct lookup by plot/block/facility) =====
+   Fully isolated from the map/SVG layers — pure add-on UI. */
+.search-bar {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto 10px;
+  padding: 10px 12px 0;
+  font-family: inherit;
+  direction: rtl;
+  z-index: 50;
+}
+
+.search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--border-light, #e2e2e2);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 0 12px;
+  height: 52px; /* comfortably tappable */
+}
+
+.search-icon {
+  flex-shrink: 0;
+  color: #9a9a9a;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px; /* >=16px prevents iOS auto-zoom on focus */
+  padding: 0 10px;
+  color: var(--text-dark, #1c1c1c);
+  min-width: 0;
+}
+
+.search-input::placeholder {
+  color: #a8a8a8;
+  font-size: 14px;
+}
+
+.search-clear {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 50%;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 12px;
+  left: 12px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  max-height: 340px;
+  overflow-y: auto;
+  z-index: 60;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 12px; /* tall rows, easy to tap */
+  border-radius: 8px;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.search-result-item:hover,
+.search-result-item.is-active {
+  background: #f2f7f5;
+}
+
+.search-result-main {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-dark, #1c1c1c);
+}
+
+.search-result-sub {
+  font-size: 12px;
+  color: var(--text-muted, #8a8a8a);
+  white-space: nowrap;
+}
+
+.search-result-empty {
+  padding: 16px 12px;
+  text-align: center;
+  color: var(--text-muted, #8a8a8a);
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .search-bar {
+    padding: 8px 10px 0;
+  }
+  .search-input-wrap {
+    height: 48px;
+  }
+}

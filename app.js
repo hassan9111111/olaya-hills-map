@@ -305,6 +305,173 @@ function attachDebugToggle() {
   });
 }
 
+/* ---------------- Direct search (plot / block / facility lookup) ----------
+   Fully self-contained: builds its own index from blocksData/plotsData
+   (already loaded by loadData) and only calls the existing
+   openPlotModal / openBlockModal / openFacilityModal functions above.
+   Does not touch rendering, hover, or click logic on the map itself. ---- */
+
+let searchIndex = [];
+
+function buildSearchIndex() {
+  searchIndex = [];
+
+  Object.entries(plotsData).forEach(([plotId, plot]) => {
+    searchIndex.push({
+      type: "plot",
+      id: plotId,
+      // numeric key used for "starts with" matching on the number itself
+      number: plot.plot,
+      main: `قطعة ${plot.plot}`,
+      sub: `بلوك ${plot.block}`,
+    });
+  });
+
+  Object.entries(blocksData).forEach(([blockId, block]) => {
+    if (block.type === "block") {
+      searchIndex.push({
+        type: "block",
+        id: blockId,
+        number: blockId,
+        main: `بلوك ${blockId}`,
+        sub: `${block.usage} — ${block.plot_count} قطعة`,
+      });
+    } else if (block.type === "facility") {
+      searchIndex.push({
+        type: "facility",
+        id: blockId,
+        number: blockId,
+        main: block.name,
+        sub: `بلوك ${blockId}`,
+      });
+    }
+  });
+}
+
+function searchMatch(query) {
+  const q = query.trim();
+  if (!q) return [];
+
+  const isDigits = /^\d+$/.test(q);
+  const results = [];
+
+  for (const item of searchIndex) {
+    let hit = false;
+    if (isDigits) {
+      // numeric query: match plot/block numbers that START WITH the digits
+      // (most useful — typing "25" finds plot 25, 250-259, block 25...)
+      hit = item.number.startsWith(q);
+    } else {
+      // text query: match facility names or "block"/"plot" containing it
+      hit = item.main.includes(q) || item.sub.includes(q);
+    }
+    if (hit) results.push(item);
+  }
+
+  // Exact number matches first, then shorter (closer) matches, then the rest
+  results.sort((a, b) => {
+    const aExact = a.number === q ? 0 : 1;
+    const bExact = b.number === q ? 0 : 1;
+    if (aExact !== bExact) return aExact - bExact;
+    return a.number.length - b.number.length;
+  });
+
+  return results.slice(0, 8);
+}
+
+function renderSearchResults(results) {
+  const list = document.getElementById("search-results");
+  list.innerHTML = "";
+
+  if (results.length === 0) {
+    list.hidden = false;
+    list.innerHTML = `<li class="search-result-empty">لا توجد نتائج مطابقة</li>`;
+    return;
+  }
+
+  results.forEach((item, i) => {
+    const li = document.createElement("li");
+    li.className = "search-result-item" + (i === 0 ? " is-active" : "");
+    li.setAttribute("data-type", item.type);
+    li.setAttribute("data-id", item.id);
+    li.innerHTML = `
+      <span class="search-result-main">${item.main}</span>
+      <span class="search-result-sub">${item.sub}</span>
+    `;
+    list.appendChild(li);
+  });
+
+  list.hidden = false;
+}
+
+function openSearchResult(item) {
+  if (item.type === "plot") openPlotModal(item.id);
+  else if (item.type === "block") openBlockModal(item.id);
+  else if (item.type === "facility") openFacilityModal(item.id);
+}
+
+function attachSearch() {
+  buildSearchIndex();
+
+  const input = document.getElementById("search-input");
+  const clearBtn = document.getElementById("search-clear");
+  const list = document.getElementById("search-results");
+
+  function closeResults() {
+    list.hidden = true;
+    list.innerHTML = "";
+  }
+
+  input.addEventListener("input", () => {
+    const q = input.value;
+    clearBtn.hidden = q.length === 0;
+    if (q.trim() === "") {
+      closeResults();
+      return;
+    }
+    renderSearchResults(searchMatch(q));
+  });
+
+  input.addEventListener("focus", () => {
+    if (input.value.trim() !== "") renderSearchResults(searchMatch(input.value));
+  });
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const first = list.querySelector(".search-result-item[data-id]");
+      if (first) {
+        openSearchResult({ type: first.getAttribute("data-type"), id: first.getAttribute("data-id") });
+        input.blur();
+        closeResults();
+      }
+    } else if (e.key === "Escape") {
+      input.blur();
+      closeResults();
+    }
+  });
+
+  list.addEventListener("click", (e) => {
+    const row = e.target.closest(".search-result-item[data-id]");
+    if (!row) return;
+    openSearchResult({ type: row.getAttribute("data-type"), id: row.getAttribute("data-id") });
+    input.value = "";
+    clearBtn.hidden = true;
+    closeResults();
+  });
+
+  clearBtn.addEventListener("click", () => {
+    input.value = "";
+    clearBtn.hidden = true;
+    closeResults();
+    input.focus();
+  });
+
+  // tapping outside the search bar closes the results dropdown
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("#search-bar")) closeResults();
+  });
+}
+
 /* ---------------- Init ---------------- */
 
 async function init() {
@@ -315,6 +482,7 @@ async function init() {
   renderBadges();
   attachInteractions();
   attachDebugToggle();
+  attachSearch();
 }
 
 init();

@@ -8,6 +8,25 @@
 </head>
 <body>
 
+  <div class="search-bar" id="search-bar">
+    <div class="search-input-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        type="text"
+        id="search-input"
+        class="search-input"
+        placeholder="ابحث برقم القطعة، أو رقم البلوك، أو اسم المرفق..."
+        autocomplete="off"
+        inputmode="search"
+      />
+      <button id="search-clear" class="search-clear" aria-label="مسح" hidden>✕</button>
+    </div>
+    <ul id="search-results" class="search-results" hidden></ul>
+  </div>
+
   <div class="map-container" id="map-container">
     <img class="bg-image" src="map-background.svg" alt="مخطط العليا هيلز" draggable="false" />
     <svg class="overlay" id="overlay" viewBox="0 0 1360.63 1345" preserveAspectRatio="xMidYMid meet">
