@@ -81,6 +81,25 @@ body {
   stroke: var(--hover-stroke);
 }
 
+/* Selected-plot highlight: clearly visible on the map so the user can see
+   the shape, its street frontage, and its neighbors while reading its
+   details — independent of hover, and stays until another plot is picked. */
+.plot-polygon.is-selected {
+  fill: rgba(255, 176, 32, 0.38);
+  stroke: #ff9800;
+  stroke-width: 3;
+  animation: plot-selected-pulse 1.1s ease-out 1;
+}
+
+@keyframes plot-selected-pulse {
+  0% {
+    fill: rgba(255, 152, 0, 0.65);
+  }
+  100% {
+    fill: rgba(255, 176, 32, 0.38);
+  }
+}
+
 /* ===== Facility layer (single clickable shape, no plot breakdown) ===== */
 .facility-polygon {
   fill: transparent;
@@ -236,6 +255,15 @@ body {
 .modal-table td {
   padding: 6px 8px;
   border-bottom: 1px solid var(--border-light);
+}
+
+.modal-table-row {
+  cursor: pointer;
+}
+
+.modal-table-row:hover,
+.modal-table-row:active {
+  background: #f2f7f5;
 }
 
 .modal-facility-note {

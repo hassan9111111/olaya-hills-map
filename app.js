@@ -29,6 +29,7 @@ const BADGE_RADIUS = 6; // pt, small enough to avoid covering nearby plot center
 
 let blocksData = {};
 let plotsData = {};
+let highlightedPlotId = null;
 
 async function loadData() {
   const [blocksRes, plotsRes] = await Promise.all([fetch(BLOCKS_URL), fetch(PLOTS_URL)]);
@@ -151,7 +152,39 @@ function attachInteractions() {
   });
 }
 
-/* ---------------- Modal content builders ---------------- */
+/* ---------------- Plot highlight (visual context on the map) ----------
+   Whenever a plot's details are opened — by direct click, by search, or
+   by tapping a row in the block table — this makes its shape clearly
+   visible on the map (own outline + neighbors + street), and keeps it
+   visible even after the info panel is closed, until another plot is
+   picked. It never changes hover/click hit-testing, only adds a visual
+   layer on top. ---------------------------------------------------- */
+
+function clearPlotHighlight() {
+  const prev = document.querySelector(".plot-polygon.is-selected");
+  if (prev) prev.classList.remove("is-selected");
+  highlightedPlotId = null;
+}
+
+function highlightPlotOnMap(plotId) {
+  clearPlotHighlight();
+  const el = document.querySelector(`.plot-polygon[data-plot-id="${plotId}"]`);
+  if (!el) return;
+  el.classList.add("is-selected");
+  highlightedPlotId = plotId;
+
+  // Bring it into view, positioned toward the TOP of the viewport so it
+  // stays visible above a bottom-sheet modal on mobile, and isn't hidden
+  // behind the centered modal on desktop either.
+  const rect = el.getBoundingClientRect();
+  const margin = window.innerHeight * 0.22;
+  const isComfortablyVisible = rect.top > 60 && rect.bottom < window.innerHeight - margin;
+  if (!isComfortablyVisible) {
+    const targetY = window.scrollY + rect.top - Math.max(70, window.innerHeight * 0.18);
+    window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
+  }
+}
+
 
 function formatNumber(n) {
   return Math.round(n).toLocaleString("en-US");
@@ -189,7 +222,7 @@ function buildBlockModalHTML(blockId, block) {
     .map((pid) => {
       const p = plotsData[pid];
       return `
-      <tr>
+      <tr class="modal-table-row" data-plot-id="${pid}">
         <td>${p.plot}</td>
         <td>${formatNumber(p.area)} م²</td>
       </tr>`;
@@ -255,6 +288,8 @@ function openPlotModal(plotId) {
   const plot = plotsData[plotId];
   if (!plot) return;
 
+  highlightPlotOnMap(plotId);
+
   const body = document.getElementById("modal-body");
   body.innerHTML = buildPlotModalHTML(plotId, plot);
   document.getElementById("view-block-btn").addEventListener("click", () => {
@@ -268,14 +303,21 @@ function openBlockModal(blockId) {
   const block = blocksData[blockId];
   if (!block || block.type !== "block") return;
 
+  clearPlotHighlight();
+
   const body = document.getElementById("modal-body");
   body.innerHTML = buildBlockModalHTML(blockId, block);
+  body.querySelectorAll(".modal-table-row[data-plot-id]").forEach((row) => {
+    row.addEventListener("click", () => openPlotModal(row.getAttribute("data-plot-id")));
+  });
   document.getElementById("modal-backdrop").classList.add("is-open");
 }
 
 function openFacilityModal(blockId) {
   const block = blocksData[blockId];
   if (!block || block.type !== "facility") return;
+
+  clearPlotHighlight();
 
   const body = document.getElementById("modal-body");
   body.innerHTML = buildFacilityModalHTML(blockId, block);
