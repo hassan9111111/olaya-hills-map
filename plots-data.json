@@ -31,7 +31,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.729913,
+  "lng": 39.142091
  },
  "1__231": {
   "block": "1",
@@ -61,7 +63,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730146,
+  "lng": 39.142196
  },
  "1__232": {
   "block": "1",
@@ -99,7 +103,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.729946,
+  "lng": 39.14248
  },
  "1__233": {
   "block": "1",
@@ -129,7 +135,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730389,
+  "lng": 39.142288
  },
  "1__234": {
   "block": "1",
@@ -159,7 +167,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730273,
+  "lng": 39.142607
  },
  "1__235": {
   "block": "1",
@@ -189,7 +199,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730643,
+  "lng": 39.142393
  },
  "1__236": {
   "block": "1",
@@ -223,7 +235,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730592,
+  "lng": 39.142706
  },
  "1__237": {
   "block": "1",
@@ -253,7 +267,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73097,
+  "lng": 39.142721
  },
  "1__238": {
   "block": "1",
@@ -287,7 +303,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730867,
+  "lng": 39.142431
  },
  "1__239": {
   "block": "1",
@@ -317,7 +335,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731263,
+  "lng": 39.142554
  },
  "1__240": {
   "block": "1",
@@ -351,7 +371,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731182,
+  "lng": 39.142331
  },
  "1__241": {
   "block": "1",
@@ -381,7 +403,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731472,
+  "lng": 39.142435
  },
  "1__242": {
   "block": "1",
@@ -411,7 +435,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731366,
+  "lng": 39.142208
  },
  "2__243": {
   "block": "2",
@@ -441,7 +467,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731729,
+  "lng": 39.142288
  },
  "2__244": {
   "block": "2",
@@ -471,7 +499,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73158,
+  "lng": 39.141985
  },
  "2__245": {
   "block": "2",
@@ -501,7 +531,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731938,
+  "lng": 39.142169
  },
  "2__246": {
   "block": "2",
@@ -531,7 +563,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731789,
+  "lng": 39.141865
  },
  "2__247": {
   "block": "2",
@@ -565,7 +599,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732019,
+  "lng": 39.141706
  },
  "2__248": {
   "block": "2",
@@ -595,7 +631,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732197,
+  "lng": 39.142109
  },
  "3__249": {
   "block": "3",
@@ -625,7 +663,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732441,
+  "lng": 39.142602
  },
  "3__250": {
   "block": "3",
@@ -659,7 +699,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732651,
+  "lng": 39.142987
  },
  "3__251": {
   "block": "3",
@@ -689,7 +731,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73225,
+  "lng": 39.1428
  },
  "3__252": {
   "block": "3",
@@ -719,7 +763,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732399,
+  "lng": 39.143103
  },
  "3__253": {
   "block": "3",
@@ -749,7 +795,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732041,
+  "lng": 39.14292
  },
  "3__254": {
   "block": "3",
@@ -779,7 +827,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73219,
+  "lng": 39.143223
  },
  "3__255": {
   "block": "3",
@@ -809,7 +859,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731832,
+  "lng": 39.143039
  },
  "3__256": {
   "block": "3",
@@ -843,7 +895,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731478,
+  "lng": 39.143212
  },
  "3__257": {
   "block": "3",
@@ -873,7 +927,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731875,
+  "lng": 39.143401
  },
  "4__258": {
   "block": "4",
@@ -903,7 +959,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732132,
+  "lng": 39.143694
  },
  "4__259": {
   "block": "4",
@@ -933,7 +991,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732447,
+  "lng": 39.143858
  },
  "4__260": {
   "block": "4",
@@ -967,7 +1027,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732627,
+  "lng": 39.144111
  },
  "4__261": {
   "block": "4",
@@ -1005,7 +1067,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73281,
+  "lng": 39.143762
  },
  "4__262": {
   "block": "4",
@@ -1035,7 +1099,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732861,
+  "lng": 39.143955
  },
  "4__263": {
   "block": "4",
@@ -1069,7 +1135,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732946,
+  "lng": 39.143551
  },
  "4__264": {
   "block": "4",
@@ -1103,7 +1171,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733091,
+  "lng": 39.143845
  },
  "5__225": {
   "block": "5",
@@ -1133,7 +1203,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731061,
+  "lng": 39.141644
  },
  "5__226": {
   "block": "5",
@@ -1167,7 +1239,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730728,
+  "lng": 39.141828
  },
  "7__222": {
   "block": "7",
@@ -1197,7 +1271,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731776,
+  "lng": 39.141235
  },
  "7__223": {
   "block": "7",
@@ -1227,7 +1303,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73156,
+  "lng": 39.141359
  },
  "7__224": {
   "block": "7",
@@ -1257,7 +1335,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731342,
+  "lng": 39.141483
  },
  "9__216": {
   "block": "9",
@@ -1287,7 +1367,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733007,
+  "lng": 39.141557
  },
  "9__217": {
   "block": "9",
@@ -1317,7 +1399,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732858,
+  "lng": 39.141254
  },
  "9__218": {
   "block": "9",
@@ -1347,7 +1431,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732782,
+  "lng": 39.141685
  },
  "9__219": {
   "block": "9",
@@ -1377,7 +1463,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732633,
+  "lng": 39.141383
  },
  "9__220": {
   "block": "9",
@@ -1411,7 +1499,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732553,
+  "lng": 39.141844
  },
  "9__221": {
   "block": "9",
@@ -1445,7 +1535,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732382,
+  "lng": 39.141498
  },
  "10__210": {
   "block": "10",
@@ -1475,7 +1567,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733765,
+  "lng": 39.141213
  },
  "10__211": {
   "block": "10",
@@ -1509,7 +1603,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733585,
+  "lng": 39.14081
  },
  "10__212": {
   "block": "10",
@@ -1539,7 +1635,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733506,
+  "lng": 39.141272
  },
  "10__213": {
   "block": "10",
@@ -1569,7 +1667,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733356,
+  "lng": 39.140969
  },
  "10__214": {
   "block": "10",
@@ -1599,7 +1699,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73328,
+  "lng": 39.1414
  },
  "10__215": {
   "block": "10",
@@ -1629,7 +1731,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733131,
+  "lng": 39.141098
  },
  "11__204": {
   "block": "11",
@@ -1659,7 +1763,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733742,
+  "lng": 39.142335
  },
  "11__205": {
   "block": "11",
@@ -1697,7 +1803,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73368,
+  "lng": 39.142112
  },
  "11__206": {
   "block": "11",
@@ -1727,7 +1835,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733967,
+  "lng": 39.142207
  },
  "11__207": {
   "block": "11",
@@ -1765,7 +1875,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733905,
+  "lng": 39.141983
  },
  "11__208": {
   "block": "11",
@@ -1799,7 +1911,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734217,
+  "lng": 39.142091
  },
  "11__209": {
   "block": "11",
@@ -1829,7 +1943,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734008,
+  "lng": 39.141706
  },
  "12__198": {
   "block": "12",
@@ -1859,7 +1975,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733052,
+  "lng": 39.142818
  },
  "12__199": {
   "block": "12",
@@ -1893,7 +2011,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732844,
+  "lng": 39.142433
  },
  "12__200": {
   "block": "12",
@@ -1923,7 +2043,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733244,
+  "lng": 39.14262
  },
  "12__201": {
   "block": "12",
@@ -1953,7 +2075,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733094,
+  "lng": 39.142317
  },
  "12__202": {
   "block": "12",
@@ -1983,7 +2107,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733468,
+  "lng": 39.142492
  },
  "12__203": {
   "block": "12",
@@ -2013,7 +2139,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733319,
+  "lng": 39.142188
  },
  "13__192": {
   "block": "13",
@@ -2043,7 +2171,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733898,
+  "lng": 39.143361
  },
  "13__193": {
   "block": "13",
@@ -2077,7 +2207,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733833,
+  "lng": 39.143166
  },
  "13__194": {
   "block": "13",
@@ -2107,7 +2239,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733673,
+  "lng": 39.14349
  },
  "13__195": {
   "block": "13",
@@ -2137,7 +2271,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733545,
+  "lng": 39.14323
  },
  "13__196": {
   "block": "13",
@@ -2171,7 +2307,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733442,
+  "lng": 39.143644
  },
  "13__197": {
   "block": "13",
@@ -2201,7 +2339,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733286,
+  "lng": 39.14329
  },
  "14__186": {
   "block": "14",
@@ -2235,7 +2375,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734644,
+  "lng": 39.142957
  },
  "14__187": {
   "block": "14",
@@ -2269,7 +2411,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734499,
+  "lng": 39.142662
  },
  "14__188": {
   "block": "14",
@@ -2299,7 +2443,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734396,
+  "lng": 39.143076
  },
  "14__189": {
   "block": "14",
@@ -2329,7 +2475,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734268,
+  "lng": 39.142816
  },
  "14__190": {
   "block": "14",
@@ -2359,7 +2507,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734171,
+  "lng": 39.143205
  },
  "14__191": {
   "block": "14",
@@ -2389,7 +2539,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734043,
+  "lng": 39.142945
  },
  "15__180": {
   "block": "15",
@@ -2419,7 +2571,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734512,
+  "lng": 39.143897
  },
  "15__181": {
   "block": "15",
@@ -2457,7 +2611,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734465,
+  "lng": 39.143703
  },
  "15__182": {
   "block": "15",
@@ -2487,7 +2643,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734738,
+  "lng": 39.143769
  },
  "15__183": {
   "block": "15",
@@ -2517,7 +2675,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73461,
+  "lng": 39.14351
  },
  "15__184": {
   "block": "15",
@@ -2551,7 +2711,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734986,
+  "lng": 39.143649
  },
  "15__185": {
   "block": "15",
@@ -2585,7 +2747,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734841,
+  "lng": 39.143355
  },
  "16__172": {
   "block": "16",
@@ -2615,7 +2779,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73362,
+  "lng": 39.144408
  },
  "16__173": {
   "block": "16",
@@ -2645,7 +2811,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733492,
+  "lng": 39.144148
  },
  "16__174": {
   "block": "16",
@@ -2675,7 +2843,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733829,
+  "lng": 39.144289
  },
  "16__175": {
   "block": "16",
@@ -2705,7 +2875,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733701,
+  "lng": 39.144029
  },
  "16__176": {
   "block": "16",
@@ -2735,7 +2907,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734039,
+  "lng": 39.144169
  },
  "16__177": {
   "block": "16",
@@ -2765,7 +2939,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73391,
+  "lng": 39.143909
  },
  "16__178": {
   "block": "16",
@@ -2795,7 +2971,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734248,
+  "lng": 39.144049
  },
  "16__179": {
   "block": "16",
@@ -2825,7 +3003,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734119,
+  "lng": 39.14379
  },
  "18__162": {
   "block": "18",
@@ -2855,7 +3035,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734658,
+  "lng": 39.144902
  },
  "18__163": {
   "block": "18",
@@ -2885,7 +3067,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73453,
+  "lng": 39.144643
  },
  "18__164": {
   "block": "18",
@@ -2915,7 +3099,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734433,
+  "lng": 39.14503
  },
  "18__165": {
   "block": "18",
@@ -2945,7 +3131,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734305,
+  "lng": 39.144771
  },
  "18__166": {
   "block": "18",
@@ -2975,7 +3163,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733862,
+  "lng": 39.145024
  },
  "18__167": {
   "block": "18",
@@ -3005,7 +3195,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734111,
+  "lng": 39.144965
  },
  "18__168": {
   "block": "18",
@@ -3039,7 +3231,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733917,
+  "lng": 39.145347
  },
  "18__169": {
   "block": "18",
@@ -3082,7 +3276,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733649,
+  "lng": 39.145146
  },
  "18__171": {
   "block": "18",
@@ -3112,7 +3308,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733476,
+  "lng": 39.144901
  },
  "19__155": {
   "block": "19",
@@ -3142,7 +3340,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735513,
+  "lng": 39.144757
  },
  "19__156": {
   "block": "19",
@@ -3172,7 +3372,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735382,
+  "lng": 39.144488
  },
  "19__157": {
   "block": "19",
@@ -3206,7 +3408,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735259,
+  "lng": 39.144203
  },
  "19__158": {
   "block": "19",
@@ -3236,7 +3440,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735156,
+  "lng": 39.144617
  },
  "19__159": {
   "block": "19",
@@ -3274,7 +3480,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735108,
+  "lng": 39.144423
  },
  "19__160": {
   "block": "19",
@@ -3304,7 +3512,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734931,
+  "lng": 39.144746
  },
  "19__161": {
   "block": "19",
@@ -3334,7 +3544,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734803,
+  "lng": 39.144486
  },
  "20__144": {
   "block": "20",
@@ -3364,7 +3576,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735819,
+  "lng": 39.145375
  },
  "20__145": {
   "block": "20",
@@ -3394,7 +3608,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735678,
+  "lng": 39.14509
  },
  "20__146": {
   "block": "20",
@@ -3424,7 +3640,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735594,
+  "lng": 39.145504
  },
  "20__147": {
   "block": "20",
@@ -3454,7 +3672,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735453,
+  "lng": 39.145218
  },
  "20__148": {
   "block": "20",
@@ -3484,7 +3704,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735369,
+  "lng": 39.145633
  },
  "20__149": {
   "block": "20",
@@ -3514,7 +3736,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735228,
+  "lng": 39.145347
  },
  "21__150": {
   "block": "21",
@@ -3544,7 +3768,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735104,
+  "lng": 39.145784
  },
  "21__151": {
   "block": "21",
@@ -3574,7 +3800,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734963,
+  "lng": 39.145498
  },
  "21__152": {
   "block": "21",
@@ -3612,7 +3840,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734772,
+  "lng": 39.145993
  },
  "21__153": {
   "block": "21",
@@ -3642,7 +3872,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734754,
+  "lng": 39.145619
  },
  "21__154": {
   "block": "21",
@@ -3680,7 +3912,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734426,
+  "lng": 39.145787
  },
  "22__269": {
   "block": "22",
@@ -3714,7 +3948,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735363,
+  "lng": 39.146328
  },
  "24__140": {
   "block": "24",
@@ -3752,7 +3988,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736455,
+  "lng": 39.146655
  },
  "24__141": {
   "block": "24",
@@ -3782,7 +4020,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736249,
+  "lng": 39.146267
  },
  "24__142": {
   "block": "24",
@@ -3812,7 +4052,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736112,
+  "lng": 39.14599
  },
  "24__143": {
   "block": "24",
@@ -3842,7 +4084,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735975,
+  "lng": 39.145714
  },
  "25__352": {
   "block": "25",
@@ -3976,7 +4220,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733921,
+  "lng": 39.140097
  },
  "28__326": {
   "block": "28",
@@ -4006,7 +4252,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735545,
+  "lng": 39.143369
  },
  "31__273": {
   "block": "31",
@@ -4044,7 +4292,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736965,
+  "lng": 39.146246
  },
  "34__36": {
   "block": "34",
@@ -4074,7 +4324,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736273,
+  "lng": 39.140008
  },
  "34__37": {
   "block": "34",
@@ -4104,7 +4356,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736405,
+  "lng": 39.140276
  },
  "34__38": {
   "block": "34",
@@ -4138,7 +4392,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736566,
+  "lng": 39.140563
  },
  "34__39": {
   "block": "34",
@@ -4168,7 +4424,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736188,
+  "lng": 39.1404
  },
  "34__40": {
   "block": "34",
@@ -4198,7 +4456,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736325,
+  "lng": 39.140677
  },
  "34__41": {
   "block": "34",
@@ -4228,7 +4488,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735979,
+  "lng": 39.140519
  },
  "34__42": {
   "block": "34",
@@ -4258,7 +4520,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736116,
+  "lng": 39.140796
  },
  "34__43": {
   "block": "34",
@@ -4288,7 +4552,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73577,
+  "lng": 39.140638
  },
  "34__44": {
   "block": "34",
@@ -4318,7 +4584,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735907,
+  "lng": 39.140916
  },
  "35__45": {
   "block": "35",
@@ -4356,7 +4624,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735594,
+  "lng": 39.140858
  },
  "35__46": {
   "block": "35",
@@ -4386,7 +4656,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73565,
+  "lng": 39.141063
  },
  "35__47": {
   "block": "35",
@@ -4416,7 +4688,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735304,
+  "lng": 39.140905
  },
  "35__48": {
   "block": "35",
@@ -4446,7 +4720,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735441,
+  "lng": 39.141183
  },
  "35__49": {
   "block": "35",
@@ -4480,7 +4756,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735073,
+  "lng": 39.141013
  },
  "35__50": {
   "block": "35",
@@ -4510,7 +4788,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735231,
+  "lng": 39.141302
  },
  "36__51": {
   "block": "36",
@@ -4540,7 +4820,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735394,
+  "lng": 39.14163
  },
  "36__52": {
   "block": "36",
@@ -4570,7 +4852,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735531,
+  "lng": 39.141907
  },
  "36__53": {
   "block": "36",
@@ -4604,7 +4888,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735664,
+  "lng": 39.142211
  },
  "36__54": {
   "block": "36",
@@ -4634,7 +4920,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73574,
+  "lng": 39.141788
  },
  "36__55": {
   "block": "36",
@@ -4664,7 +4952,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735876,
+  "lng": 39.142065
  },
  "36__56": {
   "block": "36",
@@ -4694,7 +4984,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735949,
+  "lng": 39.141669
  },
  "36__57": {
   "block": "36",
@@ -4724,7 +5016,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736085,
+  "lng": 39.141946
  },
  "37__58": {
   "block": "37",
@@ -4754,7 +5048,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736206,
+  "lng": 39.141521
  },
  "37__59": {
   "block": "37",
@@ -4784,7 +5080,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736343,
+  "lng": 39.141798
  },
  "37__60": {
   "block": "37",
@@ -4814,7 +5112,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736415,
+  "lng": 39.141402
  },
  "37__61": {
   "block": "37",
@@ -4844,7 +5144,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736552,
+  "lng": 39.141679
  },
  "37__62": {
   "block": "37",
@@ -4874,7 +5176,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736624,
+  "lng": 39.141282
  },
  "37__63": {
   "block": "37",
@@ -4904,7 +5208,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736761,
+  "lng": 39.141559
  },
  "37__64": {
   "block": "37",
@@ -4938,7 +5244,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736846,
+  "lng": 39.141131
  },
  "37__65": {
   "block": "37",
@@ -4968,7 +5276,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736978,
+  "lng": 39.141435
  },
  "37__66": {
   "block": "37",
@@ -4998,7 +5308,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737114,
+  "lng": 39.141712
  },
  "38__67": {
   "block": "38",
@@ -5028,7 +5340,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737276,
+  "lng": 39.142041
  },
  "38__68": {
   "block": "38",
@@ -5062,7 +5376,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737437,
+  "lng": 39.142329
  },
  "38__69": {
   "block": "38",
@@ -5092,7 +5408,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737059,
+  "lng": 39.142165
  },
  "38__70": {
   "block": "38",
@@ -5122,7 +5440,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737196,
+  "lng": 39.142442
  },
  "38__71": {
   "block": "38",
@@ -5152,7 +5472,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73685,
+  "lng": 39.142284
  },
  "38__72": {
   "block": "38",
@@ -5182,7 +5504,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736987,
+  "lng": 39.142561
  },
  "38__73": {
   "block": "38",
@@ -5212,7 +5536,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736641,
+  "lng": 39.142404
  },
  "38__74": {
   "block": "38",
@@ -5242,7 +5568,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736778,
+  "lng": 39.142681
  },
  "39__75": {
   "block": "39",
@@ -5272,7 +5600,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736384,
+  "lng": 39.142551
  },
  "39__76": {
   "block": "39",
@@ -5302,7 +5632,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736521,
+  "lng": 39.142828
  },
  "39__77": {
   "block": "39",
@@ -5332,7 +5664,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736175,
+  "lng": 39.142671
  },
  "39__78": {
   "block": "39",
@@ -5362,7 +5696,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736311,
+  "lng": 39.142948
  },
  "39__79": {
   "block": "39",
@@ -5396,7 +5732,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735944,
+  "lng": 39.142779
  },
  "39__80": {
   "block": "39",
@@ -5430,7 +5768,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736099,
+  "lng": 39.143094
  },
  "40__81": {
   "block": "40",
@@ -5464,7 +5804,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736302,
+  "lng": 39.143506
  },
  "40__82": {
   "block": "40",
@@ -5498,7 +5840,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736457,
+  "lng": 39.143821
  },
  "40__83": {
   "block": "40",
@@ -5528,7 +5872,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736534,
+  "lng": 39.143398
  },
  "40__84": {
   "block": "40",
@@ -5558,7 +5904,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73667,
+  "lng": 39.143675
  },
  "40__85": {
   "block": "40",
@@ -5588,7 +5936,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736743,
+  "lng": 39.143278
  },
  "40__86": {
   "block": "40",
@@ -5618,7 +5968,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736879,
+  "lng": 39.143555
  },
  "41__87": {
   "block": "41",
@@ -5648,7 +6000,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737,
+  "lng": 39.143131
  },
  "41__88": {
   "block": "41",
@@ -5678,7 +6032,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737136,
+  "lng": 39.143408
  },
  "41__89": {
   "block": "41",
@@ -5708,7 +6064,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737209,
+  "lng": 39.143011
  },
  "41__90": {
   "block": "41",
@@ -5738,7 +6096,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737346,
+  "lng": 39.143289
  },
  "41__91": {
   "block": "41",
@@ -5768,7 +6128,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737418,
+  "lng": 39.142892
  },
  "41__92": {
   "block": "41",
@@ -5798,7 +6160,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737555,
+  "lng": 39.143169
  },
  "41__93": {
   "block": "41",
@@ -5832,7 +6196,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73764,
+  "lng": 39.142741
  },
  "41__94": {
   "block": "41",
@@ -5862,7 +6228,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737772,
+  "lng": 39.143045
  },
  "42__95": {
   "block": "42",
@@ -5892,7 +6260,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737934,
+  "lng": 39.143374
  },
  "42__96": {
   "block": "42",
@@ -5922,7 +6292,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73807,
+  "lng": 39.143651
  },
  "42__97": {
   "block": "42",
@@ -5956,7 +6328,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738231,
+  "lng": 39.143939
  },
  "42__98": {
   "block": "42",
@@ -5986,7 +6360,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737853,
+  "lng": 39.143775
  },
  "42__99": {
   "block": "42",
@@ -6016,7 +6392,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73799,
+  "lng": 39.144052
  },
  "42__100": {
   "block": "42",
@@ -6054,7 +6432,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737725,
+  "lng": 39.143967
  },
  "42__101": {
   "block": "42",
@@ -6084,7 +6464,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737781,
+  "lng": 39.144171
  },
  "42__102": {
   "block": "42",
@@ -6114,7 +6496,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737436,
+  "lng": 39.144013
  },
  "42__103": {
   "block": "42",
@@ -6144,7 +6528,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737572,
+  "lng": 39.14429
  },
  "43__104": {
   "block": "43",
@@ -6174,7 +6560,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737178,
+  "lng": 39.144161
  },
  "43__105": {
   "block": "43",
@@ -6204,7 +6592,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737315,
+  "lng": 39.144438
  },
  "43__106": {
   "block": "43",
@@ -6234,7 +6624,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736969,
+  "lng": 39.14428
  },
  "43__107": {
   "block": "43",
@@ -6264,7 +6656,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737105,
+  "lng": 39.144558
  },
  "43__108": {
   "block": "43",
@@ -6298,7 +6692,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736738,
+  "lng": 39.144389
  },
  "43__109": {
   "block": "43",
@@ -6328,7 +6724,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736897,
+  "lng": 39.144677
  },
  "43__110": {
   "block": "43",
@@ -6358,7 +6756,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737034,
+  "lng": 39.144954
  },
  "44__111": {
   "block": "44",
@@ -6388,7 +6788,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737196,
+  "lng": 39.145282
  },
  "44__112": {
   "block": "44",
@@ -6422,7 +6824,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737329,
+  "lng": 39.145586
  },
  "44__113": {
   "block": "44",
@@ -6452,7 +6856,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737405,
+  "lng": 39.145163
  },
  "44__114": {
   "block": "44",
@@ -6482,7 +6888,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737542,
+  "lng": 39.14544
  },
  "44__115": {
   "block": "44",
@@ -6512,7 +6920,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737613,
+  "lng": 39.145044
  },
  "44__116": {
   "block": "44",
@@ -6542,7 +6952,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73775,
+  "lng": 39.145321
  },
  "45__117": {
   "block": "45",
@@ -6572,7 +6984,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737871,
+  "lng": 39.144897
  },
  "45__118": {
   "block": "45",
@@ -6602,7 +7016,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738008,
+  "lng": 39.145174
  },
  "45__119": {
   "block": "45",
@@ -6632,7 +7048,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73808,
+  "lng": 39.144777
  },
  "45__120": {
   "block": "45",
@@ -6662,7 +7080,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738217,
+  "lng": 39.145054
  },
  "45__121": {
   "block": "45",
@@ -6692,7 +7112,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738289,
+  "lng": 39.144658
  },
  "45__122": {
   "block": "45",
@@ -6722,7 +7144,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738425,
+  "lng": 39.144934
  },
  "45__123": {
   "block": "45",
@@ -6756,7 +7180,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738511,
+  "lng": 39.144506
  },
  "45__124": {
   "block": "45",
@@ -6786,7 +7212,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738642,
+  "lng": 39.14481
  },
  "45__125": {
   "block": "45",
@@ -6816,7 +7244,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738779,
+  "lng": 39.145087
  },
  "46__126": {
   "block": "46",
@@ -6846,7 +7276,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738941,
+  "lng": 39.145417
  },
  "46__127": {
   "block": "46",
@@ -6880,7 +7312,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.739102,
+  "lng": 39.145704
  },
  "46__128": {
   "block": "46",
@@ -6910,7 +7344,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738725,
+  "lng": 39.145541
  },
  "46__129": {
   "block": "46",
@@ -6940,7 +7376,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738861,
+  "lng": 39.145817
  },
  "46__130": {
   "block": "46",
@@ -6970,7 +7408,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738516,
+  "lng": 39.14566
  },
  "46__131": {
   "block": "46",
@@ -7000,7 +7440,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738652,
+  "lng": 39.145937
  },
  "46__132": {
   "block": "46",
@@ -7030,7 +7472,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738307,
+  "lng": 39.14578
  },
  "46__133": {
   "block": "46",
@@ -7060,7 +7504,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738443,
+  "lng": 39.146057
  },
  "47__134": {
   "block": "47",
@@ -7090,7 +7536,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738049,
+  "lng": 39.145927
  },
  "47__135": {
   "block": "47",
@@ -7120,7 +7568,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.738186,
+  "lng": 39.146203
  },
  "47__136": {
   "block": "47",
@@ -7150,7 +7600,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73784,
+  "lng": 39.146046
  },
  "47__137": {
   "block": "47",
@@ -7197,7 +7649,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737609,
+  "lng": 39.146154
  },
  "47__139": {
   "block": "47",
@@ -7231,7 +7685,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.737848,
+  "lng": 39.146421
  },
  "48__2": {
   "block": "48",
@@ -7333,7 +7789,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736753,
+  "lng": 39.147319
  },
  "48__3": {
   "block": "48",
@@ -7375,7 +7833,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735955,
+  "lng": 39.147265
  },
  "48__4": {
   "block": "48",
@@ -7421,7 +7881,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735411,
+  "lng": 39.147013
  },
  "48__5": {
   "block": "48",
@@ -7463,7 +7925,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734817,
+  "lng": 39.146982
  },
  "48__6": {
   "block": "48",
@@ -7505,7 +7969,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734245,
+  "lng": 39.14674
  },
  "48__7": {
   "block": "48",
@@ -7551,7 +8017,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733724,
+  "lng": 39.146445
  },
  "48__8": {
   "block": "48",
@@ -7585,7 +8053,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733352,
+  "lng": 39.145946
  },
  "48__9": {
   "block": "48",
@@ -7623,7 +8093,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732959,
+  "lng": 39.145431
  },
  "48__10": {
   "block": "48",
@@ -7665,7 +8137,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732527,
+  "lng": 39.144916
  },
  "48__11": {
   "block": "48",
@@ -7711,7 +8185,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732153,
+  "lng": 39.144511
  },
  "48__12": {
   "block": "48",
@@ -7753,7 +8229,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73172,
+  "lng": 39.144063
  },
  "48__13": {
   "block": "48",
@@ -7791,7 +8269,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731233,
+  "lng": 39.143771
  },
  "48__14": {
   "block": "48",
@@ -7833,7 +8313,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730754,
+  "lng": 39.143454
  },
  "48__15": {
   "block": "48",
@@ -7923,7 +8405,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.729878,
+  "lng": 39.143202
  },
  "49__1": {
   "block": "49",
@@ -7977,7 +8461,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.739031,
+  "lng": 39.147189
  },
  "50__30": {
   "block": "50",
@@ -8087,7 +8573,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73453,
+  "lng": 39.139878
  },
  "50__31": {
   "block": "50",
@@ -8117,7 +8605,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.734956,
+  "lng": 39.139839
  },
  "50__32": {
   "block": "50",
@@ -8147,7 +8637,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735219,
+  "lng": 39.139802
  },
  "50__33": {
   "block": "50",
@@ -8177,7 +8669,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735481,
+  "lng": 39.139766
  },
  "50__34": {
   "block": "50",
@@ -8207,7 +8701,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.735744,
+  "lng": 39.13973
  },
  "50__35": {
   "block": "50",
@@ -8253,7 +8749,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.736073,
+  "lng": 39.139618
  },
  "51__24": {
   "block": "51",
@@ -8283,7 +8781,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731834,
+  "lng": 39.140276
  },
  "51__25": {
   "block": "51",
@@ -8313,7 +8813,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732053,
+  "lng": 39.140246
  },
  "51__26": {
   "block": "51",
@@ -8343,7 +8845,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732292,
+  "lng": 39.140214
  },
  "51__27": {
   "block": "51",
@@ -8377,7 +8881,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.73252,
+  "lng": 39.14014
  },
  "51__28": {
   "block": "51",
@@ -8407,7 +8913,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.732764,
+  "lng": 39.140154
  },
  "51__29": {
   "block": "51",
@@ -8453,7 +8961,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.733171,
+  "lng": 39.140296
  },
  "52__17": {
   "block": "52",
@@ -8491,7 +9001,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730132,
+  "lng": 39.14051
  },
  "52__18": {
   "block": "52",
@@ -8521,7 +9033,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730354,
+  "lng": 39.140476
  },
  "52__19": {
   "block": "52",
@@ -8555,7 +9069,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730601,
+  "lng": 39.140486
  },
  "52__20": {
   "block": "52",
@@ -8585,7 +9101,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730824,
+  "lng": 39.140412
  },
  "52__21": {
   "block": "52",
@@ -8615,7 +9133,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731061,
+  "lng": 39.140379
  },
  "52__22": {
   "block": "52",
@@ -8649,7 +9169,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731272,
+  "lng": 39.140308
  },
  "52__23": {
   "block": "52",
@@ -8679,7 +9201,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.731512,
+  "lng": 39.140319
  },
  "53__227": {
   "block": "53",
@@ -8713,7 +9237,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730116,
+  "lng": 39.140935
  },
  "53__228": {
   "block": "53",
@@ -8747,7 +9273,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.730029,
+  "lng": 39.141212
  },
  "53__229": {
   "block": "53",
@@ -8789,7 +9317,9 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.72999,
+  "lng": 39.141619
  },
  "54__16": {
   "block": "54",
@@ -8835,6 +9365,8 @@
   "price": null,
   "deedNo": null,
   "owner": null,
-  "notes": null
+  "notes": null,
+  "lat": 21.728674,
+  "lng": 39.14186
  }
 }

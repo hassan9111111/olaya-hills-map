@@ -191,6 +191,14 @@ function formatNumber(n) {
 }
 
 function buildPlotModalHTML(plotId, plot) {
+  const mapsBtn =
+    plot.lat != null && plot.lng != null
+      ? `<a class="modal-action modal-action-maps" href="https://www.google.com/maps?q=${plot.lat},${plot.lng}" target="_blank" rel="noopener">
+           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+           فتح الموقع في خرائط جوجل
+         </a>`
+      : "";
+
   return `
     <span class="badge usage-${plot.usage}">${plot.usage}</span>
     <h2 class="modal-title">قطعة ${plot.plot}</h2>
@@ -214,6 +222,7 @@ function buildPlotModalHTML(plotId, plot) {
     <button class="modal-action" id="view-block-btn" data-block-id="${plot.block}">
       عرض تفاصيل البلوك
     </button>
+    ${mapsBtn}
   `;
 }
 
