@@ -133,23 +133,84 @@ function renderBadges() {
 
 /* ---------------- Interaction wiring ---------------- */
 
+// Point-in-polygon test (ray casting).
+function pointInPolygon(x, y, polygon) {
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i][0], yi = polygon[i][1];
+    const xj = polygon[j][0], yj = polygon[j][1];
+    const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
+function pointInCircle(x, y, cx, cy, r) {
+  return (x - cx) * (x - cx) + (y - cy) * (y - cy) <= r * r;
+}
+
+// Resolve a click/tap to exactly one target, using shape priority rather
+// than DOM stacking order. Three tiers:
+//   1. The badge's small "core" — tapping the printed number itself always
+//      opens that block, even if a plot polygon technically reaches under it.
+//   2. Real plot/facility polygons — win over the WIDER touch-enlarged badge
+//      area, so an enlarged badge can never swallow a nearby plot's tap.
+//   3. The full touch-enlarged badge radius — fallback for open space near
+//      the badge that no plot actually covers.
+function resolveMapClick(svgX, svgY) {
+  const BADGE_CORE_RADIUS = 6; // matches the printed circle's real visual size
+
+  for (const [blockId, block] of Object.entries(blocksData)) {
+    if (block.type === "block" && block.centroid) {
+      if (pointInCircle(svgX, svgY, block.centroid[0], block.centroid[1], BADGE_CORE_RADIUS)) {
+        return { type: "block", id: blockId };
+      }
+    }
+  }
+
+  for (const [plotId, plot] of Object.entries(plotsData)) {
+    if (plot.polygon && pointInPolygon(svgX, svgY, plot.polygon)) {
+      return { type: "plot", id: plotId };
+    }
+  }
+  for (const [blockId, block] of Object.entries(blocksData)) {
+    if (block.type === "facility" && block.polygon && pointInPolygon(svgX, svgY, block.polygon)) {
+      return { type: "facility", id: blockId };
+    }
+  }
+
+  const isTouch = window.matchMedia("(pointer: coarse)").matches;
+  for (const [blockId, block] of Object.entries(blocksData)) {
+    if (block.type === "block" && block.centroid) {
+      const r = (block.badge_radius || BADGE_RADIUS) * (isTouch ? 2 : 1);
+      if (pointInCircle(svgX, svgY, block.centroid[0], block.centroid[1], r)) {
+        return { type: "block", id: blockId };
+      }
+    }
+  }
+  return null;
+}
+
 function attachInteractions() {
-  document.getElementById("plots-layer").addEventListener("click", (e) => {
-    const target = e.target.closest(".plot-polygon");
-    if (!target) return;
-    openPlotModal(target.getAttribute("data-plot-id"));
-  });
+  const overlay = document.getElementById("overlay");
 
-  document.getElementById("facilities-layer").addEventListener("click", (e) => {
-    const target = e.target.closest(".facility-polygon");
-    if (!target) return;
-    openFacilityModal(target.getAttribute("data-facility-id"));
-  });
+  // pointerup (not click) fires immediately and reliably on touch-release
+  // across modern mobile browsers (Chrome Android, Samsung Internet, iOS
+  // Safari) — a bare "click" listener needed an extra first tap on some of
+  // them before it would respond.
+  overlay.addEventListener("pointerup", (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
 
-  document.getElementById("badges-layer").addEventListener("click", (e) => {
-    const target = e.target.closest(".block-badge");
-    if (!target) return;
-    openBlockModal(target.getAttribute("data-block-id"));
+    const pt = overlay.createSVGPoint();
+    pt.x = e.clientX;
+    pt.y = e.clientY;
+    const svgP = pt.matrixTransform(overlay.getScreenCTM().inverse());
+
+    const hit = resolveMapClick(svgP.x, svgP.y);
+    if (!hit) return;
+    if (hit.type === "plot") openPlotModal(hit.id);
+    else if (hit.type === "facility") openFacilityModal(hit.id);
+    else if (hit.type === "block") openBlockModal(hit.id);
   });
 
   document.getElementById("modal-close").addEventListener("click", closeModal);
