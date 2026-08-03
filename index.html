@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>مخطط العليا هيلز التفاعلي</title>
+<link rel="preload" as="image" href="map-background-optimized.webp" type="image/webp" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -28,7 +29,10 @@
   </div>
 
   <div class="map-container" id="map-container">
-    <img class="bg-image" src="map-background.svg" alt="مخطط العليا هيلز" draggable="false" />
+    <picture>
+      <source srcset="map-background-optimized.webp" type="image/webp" />
+      <img class="bg-image" src="map-background-optimized.jpg" alt="مخطط العليا هيلز" draggable="false" fetchpriority="high" />
+    </picture>
     <svg class="overlay" id="overlay" viewBox="0 0 1360.63 1345" preserveAspectRatio="xMidYMid meet">
       <!-- Layers are intentionally separate and independent, so future
            features (status colors, filters, search highlight...) can target

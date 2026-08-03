@@ -106,14 +106,23 @@ function renderBadges() {
   const layer = document.getElementById("badges-layer");
   const fragment = document.createDocumentFragment();
 
+  // Enlarge the tap AREA (not the visual artwork) on touch devices by
+  // setting a bigger "r" attribute directly — this works identically on
+  // every browser, unlike a CSS transform (which depends on transform-box
+  // support that some mobile browsers, notably older Samsung Internet,
+  // handle inconsistently and can shift the tap target off-circle).
+  const isTouch = window.matchMedia("(pointer: coarse)").matches;
+  const TOUCH_SCALE = 2;
+
   Object.entries(blocksData)
     .filter(([, block]) => block.type === "block")
     .forEach(([blockId, block]) => {
       if (!block.centroid) return; // not_extracted
+      const realRadius = block.badge_radius || BADGE_RADIUS;
       const el = document.createElementNS(SVG_NS, "circle");
       el.setAttribute("cx", block.centroid[0]);
       el.setAttribute("cy", block.centroid[1]);
-      el.setAttribute("r", block.badge_radius || BADGE_RADIUS);
+      el.setAttribute("r", isTouch ? realRadius * TOUCH_SCALE : realRadius);
       el.setAttribute("data-block-id", blockId);
       el.classList.add("block-badge");
       fragment.appendChild(el);
