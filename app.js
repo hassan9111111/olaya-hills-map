@@ -152,17 +152,28 @@ function pointInCircle(x, y, cx, cy, r) {
 // Resolve a click/tap to exactly one target, using shape priority rather
 // than DOM stacking order. Three tiers:
 //   1. The badge's small "core" — tapping the printed number itself always
-//      opens that block, even if a plot polygon technically reaches under it.
+//      opens that block directly, even if a plot polygon technically
+//      reaches under it. This preserves one-tap block access everywhere.
 //   2. Real plot/facility polygons — win over the WIDER touch-enlarged badge
 //      area, so an enlarged badge can never swallow a nearby plot's tap.
 //   3. The full touch-enlarged badge radius — fallback for open space near
 //      the badge that no plot actually covers.
+//
+// A few single-plot commercial blocks (25, 28, 31) have their one plot's
+// centroid sitting almost exactly on the badge center, which made that
+// plot's natural center point unreachable under the default core radius.
+// Rather than changing behavior for all 44 blocks, these three get a much
+// smaller core override — block access still works with a precise tap,
+// while the rest of their (large) plot area opens normally.
+const BADGE_CORE_RADIUS_OVERRIDES = { 25: 2, 28: 2, 31: 2 };
+
 function resolveMapClick(svgX, svgY) {
-  const BADGE_CORE_RADIUS = 6; // matches the printed circle's real visual size
+  const DEFAULT_CORE_RADIUS = 6; // matches the printed circle's real visual size
 
   for (const [blockId, block] of Object.entries(blocksData)) {
     if (block.type === "block" && block.centroid) {
-      if (pointInCircle(svgX, svgY, block.centroid[0], block.centroid[1], BADGE_CORE_RADIUS)) {
+      const coreR = BADGE_CORE_RADIUS_OVERRIDES[blockId] ?? DEFAULT_CORE_RADIUS;
+      if (pointInCircle(svgX, svgY, block.centroid[0], block.centroid[1], coreR)) {
         return { type: "block", id: blockId };
       }
     }
