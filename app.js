@@ -131,6 +131,53 @@ function renderBadges() {
   layer.appendChild(fragment);
 }
 
+/* ---------------- Sale status overlay (available / sold) ----------------
+   Purely visual, non-interactive layer. Click resolution never reads DOM
+   hit-testing (see resolveMapClick), so this layer can sit anywhere in the
+   stack with pointer-events:none and never affect any click behavior. ---- */
+
+function renderStatusOverlays() {
+  const layer = document.getElementById("status-overlay-layer");
+  layer.innerHTML = "";
+  const fragment = document.createDocumentFragment();
+
+  Object.entries(blocksData).forEach(([blockId, block]) => {
+    if (block.type !== "block") return;
+
+    if (block.sale_type === "كامل") {
+      if (block.status === "مباع" && block.polygon) {
+        const el = document.createElementNS(SVG_NS, "polygon");
+        el.setAttribute("points", pointsToAttr(block.polygon));
+        el.classList.add("sold-overlay");
+        fragment.appendChild(el);
+      }
+    } else if (block.sale_type === "بالقطعة") {
+      // ring around the badge marking this block as sold-by-plot
+      if (block.centroid) {
+        const realRadius = block.badge_radius || BADGE_RADIUS;
+        const ring = document.createElementNS(SVG_NS, "circle");
+        ring.setAttribute("cx", block.centroid[0]);
+        ring.setAttribute("cy", block.centroid[1]);
+        ring.setAttribute("r", realRadius + 4);
+        ring.classList.add("sale-by-plot-ring");
+        fragment.appendChild(ring);
+      }
+      // individual sold plots within this block
+      block.plot_ids.forEach((pid) => {
+        const plot = plotsData[pid];
+        if (plot && plot.status === "مباعة" && plot.polygon) {
+          const el = document.createElementNS(SVG_NS, "polygon");
+          el.setAttribute("points", pointsToAttr(plot.polygon));
+          el.classList.add("sold-overlay");
+          fragment.appendChild(el);
+        }
+      });
+    }
+  });
+
+  layer.appendChild(fragment);
+}
+
 /* ---------------- Interaction wiring ---------------- */
 
 // Point-in-polygon test (ray casting).
@@ -280,8 +327,12 @@ function buildPlotModalHTML(plotId, plot) {
          </a>`
       : "";
 
+  const statusPill = plot.status
+    ? `<span class="status-pill ${plot.status === "متاحة" ? "status-available" : "status-sold"}">${plot.status}</span>`
+    : "";
+
   return `
-    <span class="badge usage-${plot.usage}">${plot.usage}</span>
+    <span class="badge usage-${plot.usage}">${plot.usage}</span>${statusPill}
     <h2 class="modal-title">قطعة ${plot.plot}</h2>
     <p class="modal-subtitle">داخل بلوك ${plot.block}</p>
 
@@ -311,18 +362,29 @@ function buildBlockModalHTML(blockId, block) {
   const rows = block.plot_ids
     .map((pid) => {
       const p = plotsData[pid];
+      const rowStatus = p.status
+        ? `<span class="status-pill ${p.status === "متاحة" ? "status-available" : "status-sold"}" style="padding:2px 8px;font-size:11px;">${p.status}</span>`
+        : "";
       return `
       <tr class="modal-table-row" data-plot-id="${pid}">
         <td>${p.plot}</td>
         <td>${formatNumber(p.area)} م²</td>
+        <td>${rowStatus}</td>
       </tr>`;
     })
     .join("");
 
+  const isByPlot = block.sale_type === "بالقطعة";
+  const statusPill = !isByPlot
+    ? `<span class="status-pill ${block.status === "متاح" ? "status-available" : "status-sold"}">${block.status}</span>`
+    : "";
+  const extraCol = isByPlot ? "<th></th>" : "";
+
   return `
-    <span class="badge usage-${block.usage}">${block.usage}</span>
+    <span class="badge usage-${block.usage}">${block.usage}</span>${statusPill}
     <h2 class="modal-title">بلوك ${blockId}</h2>
     <p class="modal-subtitle">تفاصيل القطع داخل هذا البلوك</p>
+    <p class="sale-type-line">نوع البيع: ${isByPlot ? "يُباع بالقطعة" : "يُباع كاملاً"}</p>
 
     <div class="modal-stats">
       <div>
@@ -341,6 +403,7 @@ function buildBlockModalHTML(blockId, block) {
           <tr>
             <th>رقم القطعة</th>
             <th>المساحة</th>
+            ${extraCol}
           </tr>
         </thead>
         <tbody>${rows}</tbody>
@@ -604,7 +667,121 @@ function attachSearch() {
   });
 }
 
-/* ---------------- Init ---------------- */
+/* ---------------- Stats bar (counts + click-to-highlight) ---------------- */
+
+let activeStatsFilter = null;
+
+function computeStatsCounts() {
+  let blocksAvailable = 0,
+    blocksSold = 0,
+    plotsAvailable = 0;
+
+  Object.values(blocksData).forEach((block) => {
+    if (block.type !== "block") return;
+    if (block.sale_type === "كامل") {
+      if (block.status === "متاح") blocksAvailable++;
+      else if (block.status === "مباع") blocksSold++;
+    }
+  });
+
+  Object.values(plotsData).forEach((plot) => {
+    if (plot.status === "متاحة") plotsAvailable++;
+  });
+
+  return { blocksAvailable, blocksSold, plotsAvailable };
+}
+
+function renderStatsCounts() {
+  const c = computeStatsCounts();
+  document.getElementById("count-blocks-available").textContent = c.blocksAvailable;
+  document.getElementById("count-blocks-sold").textContent = c.blocksSold;
+  document.getElementById("count-plots-available").textContent = c.plotsAvailable;
+}
+
+function clearStatsFilter() {
+  activeStatsFilter = null;
+  document.getElementById("filter-overlay-layer").innerHTML = "";
+  document.querySelectorAll(".stats-card").forEach((c) => c.classList.remove("is-active"));
+}
+
+function applyStatsFilter(filterKey) {
+  const layer = document.getElementById("filter-overlay-layer");
+  layer.innerHTML = "";
+  const fragment = document.createDocumentFragment();
+
+  function dimPolygon(poly) {
+    const el = document.createElementNS(SVG_NS, "polygon");
+    el.setAttribute("points", pointsToAttr(poly));
+    el.classList.add("dim-overlay");
+    fragment.appendChild(el);
+  }
+  function ringCircle(cx, cy, r) {
+    const el = document.createElementNS(SVG_NS, "circle");
+    el.setAttribute("cx", cx);
+    el.setAttribute("cy", cy);
+    el.setAttribute("r", r + 3);
+    el.classList.add("stats-highlight-ring");
+    fragment.appendChild(el);
+  }
+  function ringPolygon(poly) {
+    const el = document.createElementNS(SVG_NS, "polygon");
+    el.setAttribute("points", pointsToAttr(poly));
+    el.classList.add("stats-highlight-ring");
+    fragment.appendChild(el);
+  }
+
+  if (filterKey === "blocks-available" || filterKey === "blocks-sold") {
+    const wantStatus = filterKey === "blocks-available" ? "متاح" : "مباع";
+    Object.entries(blocksData).forEach(([blockId, block]) => {
+      if (block.type !== "block" || block.sale_type !== "كامل" || !block.polygon) return;
+      if (block.status === wantStatus) {
+        ringPolygon(block.polygon);
+      } else {
+        dimPolygon(block.polygon);
+      }
+    });
+    // also dim sale-by-plot blocks and facilities entirely (not part of this view)
+    Object.values(blocksData).forEach((block) => {
+      if (block.polygon && (block.sale_type === "بالقطعة" || block.type === "facility")) {
+        dimPolygon(block.polygon);
+      }
+    });
+  } else if (filterKey === "plots-available") {
+    Object.entries(blocksData).forEach(([blockId, block]) => {
+      if (block.type === "block" && block.sale_type === "كامل" && block.polygon) {
+        dimPolygon(block.polygon); // whole-sale blocks aren't part of this view
+      }
+    });
+    Object.values(plotsData).forEach((plot) => {
+      if (!plot.polygon || plot.status == null) return;
+      if (plot.status === "متاحة") {
+        ringPolygon(plot.polygon);
+      } else {
+        dimPolygon(plot.polygon);
+      }
+    });
+  }
+
+  layer.appendChild(fragment);
+}
+
+function attachStatsBar() {
+  renderStatsCounts();
+
+  document.querySelectorAll(".stats-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      const key = card.getAttribute("data-filter");
+      if (activeStatsFilter === key) {
+        clearStatsFilter();
+        return;
+      }
+      clearStatsFilter();
+      activeStatsFilter = key;
+      card.classList.add("is-active");
+      applyStatsFilter(key);
+    });
+  });
+}
 
 async function init() {
   await loadData();
@@ -612,9 +789,11 @@ async function init() {
   renderFacilities();
   renderPlots();
   renderBadges();
+  renderStatusOverlays();
   attachInteractions();
   attachDebugToggle();
   attachSearch();
+  attachStatsBar();
 }
 
 init();

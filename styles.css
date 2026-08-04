@@ -585,3 +585,132 @@ body.debug-mode .block-outline-halo {
     height: 48px;
   }
 }
+
+/* ===== Sale status overlay ===== */
+
+.sold-overlay {
+  fill: rgba(255, 255, 255, 0.6);
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 0.6;
+  pointer-events: none;
+}
+
+.sale-by-plot-ring {
+  fill: none;
+  stroke: #c9a24b;
+  stroke-width: 1.6;
+  stroke-dasharray: 3 2;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+/* ===== Status badges inside modals ===== */
+
+.status-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-inline-start: 8px;
+}
+
+.status-pill.status-available {
+  background: rgba(60, 160, 100, 0.13);
+  color: #2f8f5b;
+}
+
+.status-pill.status-sold {
+  background: rgba(150, 150, 150, 0.18);
+  color: #6b6b6b;
+}
+
+.sale-type-line {
+  font-size: 13px;
+  color: var(--text-muted, #8a8a8a);
+  margin-top: 2px;
+  margin-bottom: 10px;
+}
+
+/* ===== Stats bar (top of page) ===== */
+
+.stats-bar {
+  max-width: 1400px;
+  margin: 0 auto 10px;
+  padding: 0 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stats-card {
+  flex: 1 1 140px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--border-light, #e2e2e2);
+  border-radius: 10px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.stats-card:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.stats-card.is-active {
+  border-color: #2f8f5b;
+  box-shadow: 0 0 0 1.5px #2f8f5b inset;
+}
+
+.stats-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.stats-dot.dot-available {
+  background: #2f8f5b;
+}
+
+.stats-dot.dot-sold {
+  background: #9a9a9a;
+}
+
+.stats-text {
+  font-size: 13px;
+  color: var(--text-dark, #1c1c1c);
+  white-space: nowrap;
+}
+
+.stats-text b {
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .stats-card {
+    flex: 1 1 45%;
+    padding: 8px 10px;
+  }
+  .stats-text {
+    font-size: 12px;
+  }
+}
+
+/* dim non-matching elements while a stats filter is focused (applied via a
+   dedicated overlay layer in JS, since plot/badge shapes have no fill of
+   their own to dim directly — the color comes from the background image) */
+.dim-overlay {
+  fill: rgba(255, 255, 255, 0.68);
+  pointer-events: none;
+}
+
+.stats-highlight-ring {
+  fill: none;
+  stroke: #2f8f5b;
+  stroke-width: 2;
+  pointer-events: none;
+}

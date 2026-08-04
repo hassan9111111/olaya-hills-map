@@ -9,6 +9,21 @@
 </head>
 <body>
 
+  <div class="stats-bar" id="stats-bar">
+    <div class="stats-card" id="stat-blocks-available" data-filter="blocks-available">
+      <span class="stats-dot dot-available"></span>
+      <span class="stats-text">بلوكات متاحة: <b id="count-blocks-available">0</b></span>
+    </div>
+    <div class="stats-card" id="stat-blocks-sold" data-filter="blocks-sold">
+      <span class="stats-dot dot-sold"></span>
+      <span class="stats-text">بلوكات مباعة: <b id="count-blocks-sold">0</b></span>
+    </div>
+    <div class="stats-card" id="stat-plots-available" data-filter="plots-available">
+      <span class="stats-dot dot-available"></span>
+      <span class="stats-text">قطع متاحة (بيع بالقطعة): <b id="count-plots-available">0</b></span>
+    </div>
+  </div>
+
   <div class="search-bar" id="search-bar">
     <div class="search-input-wrap">
       <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
@@ -40,6 +55,8 @@
       <g id="block-outlines-layer"></g>
       <g id="facilities-layer"></g>
       <g id="plots-layer"></g>
+      <g id="status-overlay-layer"></g>
+      <g id="filter-overlay-layer"></g>
       <g id="badges-layer"></g>
     </svg>
   </div>
