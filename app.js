@@ -808,6 +808,7 @@ function clearStatsFilter() {
   activeStatsFilter = null;
   document.getElementById("filter-overlay-layer").innerHTML = "";
   document.getElementById("focus-dim-clip").innerHTML = "";
+  document.getElementById("focus-boost-clip").innerHTML = "";
   document.querySelectorAll(".stats-card").forEach((c) => c.classList.remove("is-active"));
   document.getElementById("filter-label").classList.remove("is-active");
   document.getElementById("map-hint").style.display = "";
@@ -818,15 +819,19 @@ function applyStatsFilter(filterKey) {
   layer.innerHTML = "";
   const clipPath = document.getElementById("focus-dim-clip");
   clipPath.innerHTML = "";
+  const boostClipPath = document.getElementById("focus-boost-clip");
+  boostClipPath.innerHTML = "";
   const fragment = document.createDocumentFragment();
   const clipFragment = document.createDocumentFragment();
+  const boostClipFragment = document.createDocumentFragment();
 
   // Cinematic "out of focus" effect: elements NOT matching the filter stay
   // fully visible in structure, but render through a desaturated + slightly
   // darkened copy of the same background (the clip-path below controls
   // exactly which real, click-verified plot shapes get that treatment) —
-  // plus a very light overlay for a touch of extra depth. The map never
-  // looks "switched off"; it looks like focus shifted to what matters.
+  // plus a very light overlay for a touch of extra depth. Matching elements
+  // get the symmetric opposite treatment (richer color, brighter) so they
+  // genuinely pop forward instead of just being "left alone".
   function dimPolygon(poly) {
     const pts = pointsToAttr(poly);
 
@@ -839,10 +844,21 @@ function applyStatsFilter(filterKey) {
     el.classList.add("dim-overlay");
     fragment.appendChild(el);
   }
+  function boostPolygon(poly) {
+    const el = document.createElementNS(SVG_NS, "polygon");
+    el.setAttribute("points", pointsToAttr(poly));
+    boostClipFragment.appendChild(el);
+  }
   function dimBlockByPlots(block) {
     block.plot_ids.forEach((pid) => {
       const plot = plotsData[pid];
       if (plot && plot.polygon) dimPolygon(plot.polygon);
+    });
+  }
+  function boostBlockByPlots(block) {
+    block.plot_ids.forEach((pid) => {
+      const plot = plotsData[pid];
+      if (plot && plot.polygon) boostPolygon(plot.polygon);
     });
   }
 
@@ -850,8 +866,11 @@ function applyStatsFilter(filterKey) {
     const wantStatus = filterKey === "blocks-available" ? "متاح" : "مباع";
     Object.entries(blocksData).forEach(([blockId, block]) => {
       if (block.type === "block" && block.sale_type === "كامل") {
-        if (block.status === wantStatus) return; // matching — leave in full focus
-        dimBlockByPlots(block);
+        if (block.status === wantStatus) {
+          boostBlockByPlots(block);
+        } else {
+          dimBlockByPlots(block);
+        }
       } else if (block.type === "block" && block.sale_type === "بالقطعة") {
         dimBlockByPlots(block);
       } else if (block.type === "facility" && block.polygon) {
@@ -868,9 +887,9 @@ function applyStatsFilter(filterKey) {
         // available" is answered right here, without a click per plot.
         block.plot_ids.forEach((pid) => {
           const plot = plotsData[pid];
-          if (plot && plot.status === "مباعة" && plot.polygon) {
-            dimPolygon(plot.polygon);
-          }
+          if (!plot || !plot.polygon) return;
+          if (plot.status === "مباعة") dimPolygon(plot.polygon);
+          else boostPolygon(plot.polygon);
         });
       } else if (block.type === "facility" && block.polygon) {
         dimPolygon(block.polygon);
@@ -879,6 +898,7 @@ function applyStatsFilter(filterKey) {
   }
 
   clipPath.appendChild(clipFragment);
+  boostClipPath.appendChild(boostClipFragment);
   layer.appendChild(fragment);
 }
 

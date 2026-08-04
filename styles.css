@@ -907,14 +907,15 @@ body.debug-mode .block-outline-halo {
    dedicated overlay layer in JS, since plot/badge shapes have no fill of
    their own to dim directly — the color comes from the background image) */
 .dim-overlay {
-  fill: rgba(20, 20, 15, 0.1);
-  stroke: rgba(20, 20, 15, 0.1);
+  fill: rgba(20, 20, 15, 0.22);
+  stroke: rgba(20, 20, 15, 0.22);
   stroke-width: 1.2;
   stroke-linejoin: round;
   pointer-events: none;
 }
 
-#focus-dim-image {
+#focus-dim-image,
+#focus-boost-image {
   pointer-events: none;
 }
 

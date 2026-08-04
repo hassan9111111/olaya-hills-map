@@ -63,14 +63,27 @@
              darkened, NOT hidden. The map stays visually "alive" outside
              the current filter's focus instead of looking switched off. -->
         <filter id="focus-dim-filter" x="-5%" y="-5%" width="110%" height="110%">
-          <feColorMatrix type="saturate" values="0.12" />
+          <feColorMatrix type="saturate" values="0.05" />
           <feComponentTransfer>
-            <feFuncR type="linear" slope="0.88" intercept="0.03" />
-            <feFuncG type="linear" slope="0.88" intercept="0.03" />
-            <feFuncB type="linear" slope="0.88" intercept="0.03" />
+            <feFuncR type="linear" slope="0.62" intercept="0.08" />
+            <feFuncG type="linear" slope="0.62" intercept="0.08" />
+            <feFuncB type="linear" slope="0.62" intercept="0.08" />
           </feComponentTransfer>
         </filter>
         <clipPath id="focus-dim-clip" clipPathUnits="userSpaceOnUse"></clipPath>
+        <!-- The symmetric opposite of the dim filter: richer color + a
+             touch brighter, applied only to shapes the active filter
+             matches — makes "available" (etc.) genuinely pop forward,
+             not just "left alone" next to a muted background. -->
+        <filter id="focus-boost-filter" x="-5%" y="-5%" width="110%" height="110%">
+          <feColorMatrix type="saturate" values="1.5" />
+          <feComponentTransfer>
+            <feFuncR type="linear" slope="1.1" intercept="0.02" />
+            <feFuncG type="linear" slope="1.1" intercept="0.02" />
+            <feFuncB type="linear" slope="1.1" intercept="0.02" />
+          </feComponentTransfer>
+        </filter>
+        <clipPath id="focus-boost-clip" clipPathUnits="userSpaceOnUse"></clipPath>
       </defs>
       <!-- A second copy of the exact same background, desaturated, shown
            ONLY inside the current filter's "not the focus" shapes (via the
@@ -83,6 +96,16 @@
         preserveAspectRatio="none"
         filter="url(#focus-dim-filter)"
         clip-path="url(#focus-dim-clip)"
+      ></image>
+      <!-- Third copy, enhanced, shown only over the matching ("in focus")
+           shapes — the visual pop that makes them stand forward. -->
+      <image
+        id="focus-boost-image"
+        href="map-background-optimized.webp"
+        x="0" y="0" width="1360.63" height="1345"
+        preserveAspectRatio="none"
+        filter="url(#focus-boost-filter)"
+        clip-path="url(#focus-boost-clip)"
       ></image>
       <!-- Layers are intentionally separate and independent, so future
            features (status colors, filters, search highlight...) can target
