@@ -796,6 +796,11 @@ function renderStatsCounts() {
   document.getElementById("count-blocks-available").textContent = c.blocksAvailable;
   document.getElementById("count-blocks-sold").textContent = c.blocksSold;
   document.getElementById("count-plots-available").textContent = c.plotsAvailable;
+
+  const totalWholeSale = c.blocksAvailable + c.blocksSold;
+  const soldPct = totalWholeSale > 0 ? Math.round((c.blocksSold / totalWholeSale) * 100) : 0;
+  document.getElementById("stats-progress-fill").style.width = soldPct + "%";
+  document.getElementById("stats-progress-pct").textContent = soldPct + "%";
 }
 
 const FILTER_LABELS = {
