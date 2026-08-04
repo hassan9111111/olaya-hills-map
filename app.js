@@ -807,6 +807,7 @@ const FILTER_LABELS = {
 function clearStatsFilter() {
   activeStatsFilter = null;
   document.getElementById("filter-overlay-layer").innerHTML = "";
+  document.getElementById("focus-dim-clip").innerHTML = "";
   document.querySelectorAll(".stats-card").forEach((c) => c.classList.remove("is-active"));
   document.getElementById("filter-label").classList.remove("is-active");
   document.getElementById("map-hint").style.display = "";
@@ -815,22 +816,26 @@ function clearStatsFilter() {
 function applyStatsFilter(filterKey) {
   const layer = document.getElementById("filter-overlay-layer");
   layer.innerHTML = "";
+  const clipPath = document.getElementById("focus-dim-clip");
+  clipPath.innerHTML = "";
   const fragment = document.createDocumentFragment();
+  const clipFragment = document.createDocumentFragment();
 
-  // Deliberately minimal: dim everything that does NOT match. Matching
-  // items get no added decoration at all — their own natural map colors
-  // (already distinct: turquoise/red plots, teal badges) are the only
-  // highlight. No extra borders/rings competing for attention.
-  //
-  // Precision matters here: a block is dimmed by filling each of its real
-  // PLOT polygons individually (not a single computed outer hull). A hull
-  // can noticeably overshoot for long/curved/irregular blocks (measured up
-  // to ~40% extra area for some), bleeding into streets. Per-plot fills
-  // are exact by construction — the same verified boundaries used for
-  // click detection everywhere else in the project.
+  // Cinematic "out of focus" effect: elements NOT matching the filter stay
+  // fully visible in structure, but render through a desaturated + slightly
+  // darkened copy of the same background (the clip-path below controls
+  // exactly which real, click-verified plot shapes get that treatment) —
+  // plus a very light overlay for a touch of extra depth. The map never
+  // looks "switched off"; it looks like focus shifted to what matters.
   function dimPolygon(poly) {
+    const pts = pointsToAttr(poly);
+
+    const clipShape = document.createElementNS(SVG_NS, "polygon");
+    clipShape.setAttribute("points", pts);
+    clipFragment.appendChild(clipShape);
+
     const el = document.createElementNS(SVG_NS, "polygon");
-    el.setAttribute("points", pointsToAttr(poly));
+    el.setAttribute("points", pts);
     el.classList.add("dim-overlay");
     fragment.appendChild(el);
   }
@@ -845,7 +850,7 @@ function applyStatsFilter(filterKey) {
     const wantStatus = filterKey === "blocks-available" ? "متاح" : "مباع";
     Object.entries(blocksData).forEach(([blockId, block]) => {
       if (block.type === "block" && block.sale_type === "كامل") {
-        if (block.status === wantStatus) return; // matching — leave undimmed
+        if (block.status === wantStatus) return; // matching — leave in full focus
         dimBlockByPlots(block);
       } else if (block.type === "block" && block.sale_type === "بالقطعة") {
         dimBlockByPlots(block);
@@ -858,9 +863,9 @@ function applyStatsFilter(filterKey) {
       if (block.type === "block" && block.sale_type === "كامل") {
         dimBlockByPlots(block);
       } else if (block.type === "block" && block.sale_type === "بالقطعة") {
-        // The block itself stays natural — but within it, sold plots dim
-        // individually too, so "which plots are actually available" is
-        // answered right here, without a click per plot.
+        // The block itself stays in full focus — but within it, sold plots
+        // fall out of focus individually too, so "which plots are actually
+        // available" is answered right here, without a click per plot.
         block.plot_ids.forEach((pid) => {
           const plot = plotsData[pid];
           if (plot && plot.status === "مباعة" && plot.polygon) {
@@ -873,6 +878,7 @@ function applyStatsFilter(filterKey) {
     });
   }
 
+  clipPath.appendChild(clipFragment);
   layer.appendChild(fragment);
 }
 

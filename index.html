@@ -58,6 +58,32 @@
       <img class="bg-image" src="map-background-optimized.jpg" alt="مخطط العليا هيلز" draggable="false" fetchpriority="high" />
     </picture>
     <svg class="overlay" id="overlay" viewBox="0 0 1360.63 1345" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <!-- Cinematic "out of focus" look: heavily desaturated + slightly
+             darkened, NOT hidden. The map stays visually "alive" outside
+             the current filter's focus instead of looking switched off. -->
+        <filter id="focus-dim-filter" x="-5%" y="-5%" width="110%" height="110%">
+          <feColorMatrix type="saturate" values="0.12" />
+          <feComponentTransfer>
+            <feFuncR type="linear" slope="0.88" intercept="0.03" />
+            <feFuncG type="linear" slope="0.88" intercept="0.03" />
+            <feFuncB type="linear" slope="0.88" intercept="0.03" />
+          </feComponentTransfer>
+        </filter>
+        <clipPath id="focus-dim-clip" clipPathUnits="userSpaceOnUse"></clipPath>
+      </defs>
+      <!-- A second copy of the exact same background, desaturated, shown
+           ONLY inside the current filter's "not the focus" shapes (via the
+           clip path above). Sits above the normal full-color background
+           but below every interactive layer, so clicking is unaffected. -->
+      <image
+        id="focus-dim-image"
+        href="map-background-optimized.webp"
+        x="0" y="0" width="1360.63" height="1345"
+        preserveAspectRatio="none"
+        filter="url(#focus-dim-filter)"
+        clip-path="url(#focus-dim-clip)"
+      ></image>
       <!-- Layers are intentionally separate and independent, so future
            features (status colors, filters, search highlight...) can target
            one layer without touching the others. Order = stacking order. -->
