@@ -801,7 +801,7 @@ function renderStatsCounts() {
 const FILTER_LABELS = {
   "blocks-available": "يعرض الآن: البلوكات المتاحة فقط",
   "blocks-sold": "يعرض الآن: البلوكات المباعة فقط",
-  "plots-available": "يعرض الآن: البلوكات المخصصة للبيع بالقطعة",
+  "plots-available": "يعرض الآن: القطع المتاحة ضمن بلوكات البيع بالقطعة",
 };
 
 function clearStatsFilter() {
@@ -847,6 +847,16 @@ function applyStatsFilter(filterKey) {
       if (block.type === "block" && block.sale_type === "كامل") {
         const hull = getBlockTightHull(blockId);
         if (hull) dimPolygon(hull);
+      } else if (block.type === "block" && block.sale_type === "بالقطعة") {
+        // The block itself stays natural — but within it, sold plots dim
+        // individually too, so "which plots are actually available" is
+        // answered right here, without a click per plot.
+        block.plot_ids.forEach((pid) => {
+          const plot = plotsData[pid];
+          if (plot && plot.status === "مباعة" && plot.polygon) {
+            dimPolygon(plot.polygon);
+          }
+        });
       } else if (block.type === "facility" && block.polygon) {
         dimPolygon(block.polygon);
       }
