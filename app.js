@@ -821,11 +821,24 @@ function applyStatsFilter(filterKey) {
   // items get no added decoration at all — their own natural map colors
   // (already distinct: turquoise/red plots, teal badges) are the only
   // highlight. No extra borders/rings competing for attention.
+  //
+  // Precision matters here: a block is dimmed by filling each of its real
+  // PLOT polygons individually (not a single computed outer hull). A hull
+  // can noticeably overshoot for long/curved/irregular blocks (measured up
+  // to ~40% extra area for some), bleeding into streets. Per-plot fills
+  // are exact by construction — the same verified boundaries used for
+  // click detection everywhere else in the project.
   function dimPolygon(poly) {
     const el = document.createElementNS(SVG_NS, "polygon");
     el.setAttribute("points", pointsToAttr(poly));
     el.classList.add("dim-overlay");
     fragment.appendChild(el);
+  }
+  function dimBlockByPlots(block) {
+    block.plot_ids.forEach((pid) => {
+      const plot = plotsData[pid];
+      if (plot && plot.polygon) dimPolygon(plot.polygon);
+    });
   }
 
   if (filterKey === "blocks-available" || filterKey === "blocks-sold") {
@@ -833,11 +846,9 @@ function applyStatsFilter(filterKey) {
     Object.entries(blocksData).forEach(([blockId, block]) => {
       if (block.type === "block" && block.sale_type === "كامل") {
         if (block.status === wantStatus) return; // matching — leave undimmed
-        const hull = getBlockTightHull(blockId);
-        if (hull) dimPolygon(hull);
+        dimBlockByPlots(block);
       } else if (block.type === "block" && block.sale_type === "بالقطعة") {
-        const hull = getBlockTightHull(blockId);
-        if (hull) dimPolygon(hull);
+        dimBlockByPlots(block);
       } else if (block.type === "facility" && block.polygon) {
         dimPolygon(block.polygon); // facility shapes are already accurate, real click-verified boundaries
       }
@@ -845,8 +856,7 @@ function applyStatsFilter(filterKey) {
   } else if (filterKey === "plots-available") {
     Object.entries(blocksData).forEach(([blockId, block]) => {
       if (block.type === "block" && block.sale_type === "كامل") {
-        const hull = getBlockTightHull(blockId);
-        if (hull) dimPolygon(hull);
+        dimBlockByPlots(block);
       } else if (block.type === "block" && block.sale_type === "بالقطعة") {
         // The block itself stays natural — but within it, sold plots dim
         // individually too, so "which plots are actually available" is
@@ -894,7 +904,6 @@ async function init() {
   renderFacilities();
   renderPlots();
   renderBadges();
-  renderStatusOverlays();
   attachInteractions();
   attachDebugToggle();
   attachSearch();
