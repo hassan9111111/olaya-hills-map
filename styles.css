@@ -642,9 +642,9 @@ body.debug-mode .block-outline-halo {
 /* ===== Sale status overlay ===== */
 
 .sold-overlay {
-  fill: rgba(255, 255, 255, 0.6);
-  stroke: rgba(255, 255, 255, 0.85);
-  stroke-width: 0.6;
+  fill: rgba(120, 120, 120, 0.48);
+  stroke: rgba(90, 90, 90, 0.55);
+  stroke-width: 0.8;
   pointer-events: none;
 }
 

@@ -301,9 +301,12 @@ function highlightPlotOnMap(plotId) {
   const el = document.querySelector(`.plot-polygon[data-plot-id="${plotId}"]`);
   if (!el) return;
   el.classList.add("is-selected");
-  if (plotsData[plotId] && plotsData[plotId].status === "مباعة") {
-    el.classList.add("is-sold-selected");
-  }
+  const plot = plotsData[plotId];
+  const parentBlock = plot ? blocksData[plot.block] : null;
+  const isSold =
+    (plot && plot.status === "مباعة") ||
+    (parentBlock && parentBlock.sale_type === "كامل" && parentBlock.status === "مباع");
+  if (isSold) el.classList.add("is-sold-selected");
   highlightedPlotId = plotId;
 
   // Bring it into view, positioned toward the TOP of the viewport so it
@@ -345,8 +348,16 @@ function buildPlotModalHTML(plotId, plot) {
          </a>`
       : "";
 
+  const parentBlock = blocksData[plot.block];
+  const isInSoldWholeBlock =
+    parentBlock && parentBlock.sale_type === "كامل" && parentBlock.status === "مباع";
+
   const soldBanner =
-    plot.status === "مباعة" ? `<div class="sold-banner"><span class="dot"></span>مباعة</div>` : "";
+    plot.status === "مباعة"
+      ? `<div class="sold-banner"><span class="dot"></span>مباعة</div>`
+      : isInSoldWholeBlock
+        ? `<div class="sold-banner"><span class="dot"></span>هذه القطعة ضمن بلوك مباع بالكامل</div>`
+        : "";
 
   return `
     ${soldBanner}
