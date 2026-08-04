@@ -136,6 +136,27 @@ function renderBadges() {
    hit-testing (see resolveMapClick), so this layer can sit anywhere in the
    stack with pointer-events:none and never affect any click behavior. ---- */
 
+// Minimal convex hull (Andrew's monotone chain) — used only to draw a tight
+// OUTER stroke around a block's real plots, never for the fill itself.
+function convexHull(points) {
+  const pts = points.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lower = [];
+  for (const p of pts) {
+    while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop();
+    lower.push(p);
+  }
+  const upper = [];
+  for (let i = pts.length - 1; i >= 0; i--) {
+    const p = pts[i];
+    while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop();
+    upper.push(p);
+  }
+  upper.pop();
+  lower.pop();
+  return lower.concat(upper);
+}
+
 function renderStatusOverlays() {
   const layer = document.getElementById("status-overlay-layer");
   layer.innerHTML = "";
@@ -145,11 +166,31 @@ function renderStatusOverlays() {
     if (block.type !== "block") return;
 
     if (block.sale_type === "كامل") {
-      if (block.status === "مباع" && block.polygon) {
-        const el = document.createElementNS(SVG_NS, "polygon");
-        el.setAttribute("points", pointsToAttr(block.polygon));
-        el.classList.add("sold-overlay");
-        fragment.appendChild(el);
+      if (block.status === "مباع") {
+        // Fill: each real plot polygon individually — guarantees the
+        // shading never extends past a true plot boundary into a street,
+        // sidewalk, median, or landscaped strip, no matter how irregular
+        // the block's overall shape is.
+        const allPoints = [];
+        block.plot_ids.forEach((pid) => {
+          const plot = plotsData[pid];
+          if (!plot || !plot.polygon) return;
+          allPoints.push(...plot.polygon);
+          const fillEl = document.createElementNS(SVG_NS, "polygon");
+          fillEl.setAttribute("points", pointsToAttr(plot.polygon));
+          fillEl.classList.add("sold-overlay-fill");
+          fragment.appendChild(fillEl);
+        });
+        // Stroke: a tight hull of the real plot corners only, so the outer
+        // outline hugs the actual block silhouette instead of a looser
+        // pre-computed shape.
+        if (allPoints.length >= 3) {
+          const hull = convexHull(allPoints);
+          const strokeEl = document.createElementNS(SVG_NS, "polygon");
+          strokeEl.setAttribute("points", pointsToAttr(hull));
+          strokeEl.classList.add("sold-overlay-stroke");
+          fragment.appendChild(strokeEl);
+        }
       }
     } else if (block.sale_type === "بالقطعة") {
       // ring around the badge marking this block as sold-by-plot

@@ -648,6 +648,22 @@ body.debug-mode .block-outline-halo {
   pointer-events: none;
 }
 
+/* Whole-sold-block overlay: fill comes from each real plot polygon (no
+   stroke per-plot, so adjacent plots don't show a visible internal seam),
+   and a single darker stroke traces the true outer silhouette only. */
+.sold-overlay-fill {
+  fill: rgba(140, 140, 140, 0.4);
+  stroke: none;
+  pointer-events: none;
+}
+
+.sold-overlay-stroke {
+  fill: none;
+  stroke: rgba(90, 90, 90, 0.65);
+  stroke-width: 1;
+  pointer-events: none;
+}
+
 .sale-by-plot-ring {
   fill: none;
   stroke: #c9a24b;
