@@ -817,24 +817,14 @@ function applyStatsFilter(filterKey) {
   layer.innerHTML = "";
   const fragment = document.createDocumentFragment();
 
+  // Deliberately minimal: dim everything that does NOT match. Matching
+  // items get no added decoration at all — their own natural map colors
+  // (already distinct: turquoise/red plots, teal badges) are the only
+  // highlight. No extra borders/rings competing for attention.
   function dimPolygon(poly) {
     const el = document.createElementNS(SVG_NS, "polygon");
     el.setAttribute("points", pointsToAttr(poly));
     el.classList.add("dim-overlay");
-    fragment.appendChild(el);
-  }
-  function ringCircle(cx, cy, r) {
-    const el = document.createElementNS(SVG_NS, "circle");
-    el.setAttribute("cx", cx);
-    el.setAttribute("cy", cy);
-    el.setAttribute("r", r + 3);
-    el.classList.add("stats-highlight-ring");
-    fragment.appendChild(el);
-  }
-  function ringPolygon(poly) {
-    const el = document.createElementNS(SVG_NS, "polygon");
-    el.setAttribute("points", pointsToAttr(poly));
-    el.classList.add("stats-highlight-ring");
     fragment.appendChild(el);
   }
 
@@ -842,10 +832,9 @@ function applyStatsFilter(filterKey) {
     const wantStatus = filterKey === "blocks-available" ? "متاح" : "مباع";
     Object.entries(blocksData).forEach(([blockId, block]) => {
       if (block.type === "block" && block.sale_type === "كامل") {
+        if (block.status === wantStatus) return; // matching — leave undimmed
         const hull = getBlockTightHull(blockId);
-        if (!hull) return;
-        if (block.status === wantStatus) ringPolygon(hull);
-        else dimPolygon(hull);
+        if (hull) dimPolygon(hull);
       } else if (block.type === "block" && block.sale_type === "بالقطعة") {
         const hull = getBlockTightHull(blockId);
         if (hull) dimPolygon(hull);
@@ -858,9 +847,6 @@ function applyStatsFilter(filterKey) {
       if (block.type === "block" && block.sale_type === "كامل") {
         const hull = getBlockTightHull(blockId);
         if (hull) dimPolygon(hull);
-      } else if (block.type === "block" && block.sale_type === "بالقطعة") {
-        const hull = getBlockTightHull(blockId);
-        if (hull) ringPolygon(hull);
       } else if (block.type === "facility" && block.polygon) {
         dimPolygon(block.polygon);
       }

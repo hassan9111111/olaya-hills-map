@@ -166,6 +166,16 @@ body {
   stroke: var(--hover-stroke);
 }
 
+/* Civil Defense (block 26) uses a distinct purple/indigo icon in the map
+   artwork itself (unlike the teal circles used for every other facility).
+   A plain white hover stroke reads as mismatched against it, so this one
+   facility gets a hover tone drawn from its own color instead. */
+.facility-polygon[data-facility-id="26"]:hover,
+.facility-polygon[data-facility-id="26"].is-hovered {
+  fill: rgba(91, 79, 158, 0.22);
+  stroke: #5b4f9e;
+}
+
 /* ===== Badge layer (the block-number circle — opens the full block modal) ===== */
 .block-badge {
   fill: rgba(255, 255, 255, 0.01); /* effectively invisible but always painted, so hit-testing is reliable across browsers */
