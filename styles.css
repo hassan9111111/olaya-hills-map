@@ -87,6 +87,14 @@ body {
   animation: plot-selected-pulse 1.1s ease-out 1;
 }
 
+/* Sold variant: same mechanism, red instead of orange, so the selection
+   frame itself reinforces "sold" even before the modal is read. */
+.plot-polygon.is-selected.is-sold-selected {
+  fill: rgba(235, 64, 52, 0.32);
+  stroke: #d32f2f;
+  animation: plot-selected-pulse-sold 1.1s ease-out 1;
+}
+
 @keyframes plot-selected-pulse {
   0% {
     fill: rgba(255, 152, 0, 0.65);
@@ -94,6 +102,51 @@ body {
   100% {
     fill: rgba(255, 176, 32, 0.38);
   }
+}
+
+@keyframes plot-selected-pulse-sold {
+  0% {
+    fill: rgba(211, 47, 47, 0.6);
+  }
+  100% {
+    fill: rgba(235, 64, 52, 0.32);
+  }
+}
+
+/* Block-level selection highlight (outline only — blocks are large, a fill
+   would hide everything inside). Reuses the same orange/red language. */
+.block-select-outline {
+  fill: none;
+  stroke: #ff9800;
+  stroke-width: 3.5;
+  pointer-events: none;
+  animation: plot-selected-pulse 1.1s ease-out 1;
+}
+
+.block-select-outline.is-sold-selected {
+  stroke: #d32f2f;
+}
+
+/* ===== Sold banner inside the modal ===== */
+.sold-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #e53935;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+
+.sold-banner .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fff;
+  flex-shrink: 0;
 }
 
 /* ===== Facility layer (single clickable shape, no plot breakdown) ===== */

@@ -290,8 +290,10 @@ function attachInteractions() {
 
 function clearPlotHighlight() {
   const prev = document.querySelector(".plot-polygon.is-selected");
-  if (prev) prev.classList.remove("is-selected");
+  if (prev) prev.classList.remove("is-selected", "is-sold-selected");
   highlightedPlotId = null;
+  const prevBlockOutline = document.querySelector(".block-select-outline");
+  if (prevBlockOutline) prevBlockOutline.remove();
 }
 
 function highlightPlotOnMap(plotId) {
@@ -299,6 +301,9 @@ function highlightPlotOnMap(plotId) {
   const el = document.querySelector(`.plot-polygon[data-plot-id="${plotId}"]`);
   if (!el) return;
   el.classList.add("is-selected");
+  if (plotsData[plotId] && plotsData[plotId].status === "مباعة") {
+    el.classList.add("is-sold-selected");
+  }
   highlightedPlotId = plotId;
 
   // Bring it into view, positioned toward the TOP of the viewport so it
@@ -311,6 +316,19 @@ function highlightPlotOnMap(plotId) {
     const targetY = window.scrollY + rect.top - Math.max(70, window.innerHeight * 0.18);
     window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
   }
+}
+
+function highlightBlockOnMap(blockId) {
+  clearPlotHighlight();
+  const block = blocksData[blockId];
+  if (!block || !block.polygon) return;
+  const el = document.createElementNS(SVG_NS, "polygon");
+  el.setAttribute("points", pointsToAttr(block.polygon));
+  el.classList.add("block-select-outline");
+  if (block.sale_type === "كامل" && block.status === "مباع") {
+    el.classList.add("is-sold-selected");
+  }
+  document.getElementById("status-overlay-layer").appendChild(el);
 }
 
 
@@ -327,12 +345,12 @@ function buildPlotModalHTML(plotId, plot) {
          </a>`
       : "";
 
-  const statusPill = plot.status
-    ? `<span class="status-pill ${plot.status === "متاحة" ? "status-available" : "status-sold"}">${plot.status}</span>`
-    : "";
+  const soldBanner =
+    plot.status === "مباعة" ? `<div class="sold-banner"><span class="dot"></span>مباعة</div>` : "";
 
   return `
-    <span class="badge usage-${plot.usage}">${plot.usage}</span>${statusPill}
+    ${soldBanner}
+    <span class="badge usage-${plot.usage}">${plot.usage}</span>
     <h2 class="modal-title">قطعة ${plot.plot}</h2>
     <p class="modal-subtitle">داخل بلوك ${plot.block}</p>
 
@@ -375,13 +393,15 @@ function buildBlockModalHTML(blockId, block) {
     .join("");
 
   const isByPlot = block.sale_type === "بالقطعة";
-  const statusPill = !isByPlot
-    ? `<span class="status-pill ${block.status === "متاح" ? "status-available" : "status-sold"}">${block.status}</span>`
-    : "";
+  const soldBanner =
+    !isByPlot && block.status === "مباع"
+      ? `<div class="sold-banner"><span class="dot"></span>البلوك مباع بالكامل</div>`
+      : "";
   const extraCol = isByPlot ? "<th></th>" : "";
 
   return `
-    <span class="badge usage-${block.usage}">${block.usage}</span>${statusPill}
+    ${soldBanner}
+    <span class="badge usage-${block.usage}">${block.usage}</span>
     <h2 class="modal-title">بلوك ${blockId}</h2>
     <p class="modal-subtitle">تفاصيل القطع داخل هذا البلوك</p>
     <p class="sale-type-line">نوع البيع: ${isByPlot ? "يُباع بالقطعة" : "يُباع كاملاً"}</p>
@@ -456,7 +476,7 @@ function openBlockModal(blockId) {
   const block = blocksData[blockId];
   if (!block || block.type !== "block") return;
 
-  clearPlotHighlight();
+  highlightBlockOnMap(blockId);
 
   const body = document.getElementById("modal-body");
   body.innerHTML = buildBlockModalHTML(blockId, block);
