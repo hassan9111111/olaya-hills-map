@@ -10,13 +10,15 @@
 <body>
 
   <div class="stats-bar" id="stats-bar">
-    <div class="stats-card" id="stat-blocks-available" data-filter="blocks-available">
-      <span class="stats-dot dot-available"></span>
-      <span class="stats-text">بلوكات متاحة: <b id="count-blocks-available">0</b></span>
-    </div>
-    <div class="stats-card" id="stat-blocks-sold" data-filter="blocks-sold">
-      <span class="stats-dot dot-sold"></span>
-      <span class="stats-text">بلوكات مباعة: <b id="count-blocks-sold">0</b></span>
+    <div class="stats-card stats-card-combined" id="stat-blocks-available" data-filter="blocks-available">
+      <div class="stats-combined-row">
+        <span class="stats-dot dot-available"></span>
+        <span class="stats-text"><b id="count-blocks-available">0</b> متاح</span>
+        <span class="stats-combined-sep"></span>
+        <span class="stats-dot dot-sold"></span>
+        <span class="stats-text"><b id="count-blocks-sold">0</b> مباع</span>
+      </div>
+      <span class="stats-combined-label">حالة البلوكات</span>
     </div>
     <div class="stats-card" id="stat-plots-available" data-filter="plots-available">
       <span class="stats-dot dot-available"></span>

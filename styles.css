@@ -868,6 +868,31 @@ body.debug-mode .block-outline-halo {
   box-shadow: 0 0 0 1.5px #2f8f5b inset;
 }
 
+.stats-card.stats-card-combined {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+}
+
+.stats-combined-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.stats-combined-sep {
+  width: 1px;
+  height: 14px;
+  background: var(--border-light, #e2e2e2);
+  margin: 0 2px;
+}
+
+.stats-combined-label {
+  font-size: 10.5px;
+  color: var(--text-muted, #8a8a8a);
+  text-align: center;
+}
+
 .stats-dot {
   width: 9px;
   height: 9px;

@@ -799,8 +799,7 @@ function renderStatsCounts() {
 }
 
 const FILTER_LABELS = {
-  "blocks-available": "يعرض الآن: البلوكات المتاحة فقط",
-  "blocks-sold": "يعرض الآن: البلوكات المباعة فقط",
+  "blocks-available": "يعرض الآن: حالة البلوكات — متاح مقابل مباع",
   "plots-available": "يعرض الآن: القطع المتاحة ضمن بلوكات البيع بالقطعة",
 };
 
