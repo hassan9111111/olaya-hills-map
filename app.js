@@ -157,6 +157,28 @@ function convexHull(points) {
   return lower.concat(upper);
 }
 
+// The stored block.polygon field (originally computed for badge placement)
+// is noticeably LOOSER than a block's true footprint for many blocks —
+// bleeding into streets/medians when used for visual outlines. Everywhere
+// a block's outline is drawn on the map, use this tight hull (built
+// directly from its own real, click-verified plot boundaries) instead.
+// Cached per block since it never changes at runtime.
+const blockTightHullCache = {};
+function getBlockTightHull(blockId) {
+  if (blockTightHullCache[blockId]) return blockTightHullCache[blockId];
+  const block = blocksData[blockId];
+  if (!block || !block.plot_ids) return null;
+  const pts = [];
+  block.plot_ids.forEach((pid) => {
+    const plot = plotsData[pid];
+    if (plot && plot.polygon) pts.push(...plot.polygon);
+  });
+  if (pts.length < 3) return null;
+  const hull = convexHull(pts);
+  blockTightHullCache[blockId] = hull;
+  return hull;
+}
+
 function renderStatusOverlays() {
   const layer = document.getElementById("status-overlay-layer");
   layer.innerHTML = "";
@@ -181,11 +203,10 @@ function renderStatusOverlays() {
           fillEl.classList.add("sold-overlay-fill");
           fragment.appendChild(fillEl);
         });
-        // Stroke: a tight hull of the real plot corners only, so the outer
-        // outline hugs the actual block silhouette instead of a looser
-        // pre-computed shape.
-        if (allPoints.length >= 3) {
-          const hull = convexHull(allPoints);
+        // Stroke: the shared tight hull, so the outer outline hugs the
+        // actual block silhouette instead of a looser pre-computed shape.
+        const hull = getBlockTightHull(blockId);
+        if (hull) {
           const strokeEl = document.createElementNS(SVG_NS, "polygon");
           strokeEl.setAttribute("points", pointsToAttr(hull));
           strokeEl.classList.add("sold-overlay-stroke");
@@ -195,13 +216,8 @@ function renderStatusOverlays() {
     } else if (block.sale_type === "بالقطعة") {
       // dashed outline tracing this block's real outer silhouette — reads
       // at the block level from a glance, not just as a small badge detail
-      const allPoints = [];
-      block.plot_ids.forEach((pid) => {
-        const plot = plotsData[pid];
-        if (plot && plot.polygon) allPoints.push(...plot.polygon);
-      });
-      if (allPoints.length >= 3) {
-        const hull = convexHull(allPoints);
+      const hull = getBlockTightHull(blockId);
+      if (hull) {
         const outlineEl = document.createElementNS(SVG_NS, "polygon");
         outlineEl.setAttribute("points", pointsToAttr(hull));
         outlineEl.classList.add("by-plot-block-outline");
@@ -369,9 +385,10 @@ function highlightPlotOnMap(plotId) {
 function highlightBlockOnMap(blockId) {
   clearPlotHighlight();
   const block = blocksData[blockId];
-  if (!block || !block.polygon) return;
+  const hull = getBlockTightHull(blockId);
+  if (!block || !hull) return;
   const el = document.createElementNS(SVG_NS, "polygon");
-  el.setAttribute("points", pointsToAttr(block.polygon));
+  el.setAttribute("points", pointsToAttr(hull));
   el.classList.add("block-select-outline");
   if (block.sale_type === "كامل" && block.status === "مباع") {
     el.classList.add("is-sold-selected");
@@ -816,31 +833,28 @@ function applyStatsFilter(filterKey) {
   if (filterKey === "blocks-available" || filterKey === "blocks-sold") {
     const wantStatus = filterKey === "blocks-available" ? "متاح" : "مباع";
     Object.entries(blocksData).forEach(([blockId, block]) => {
-      if (block.type !== "block" || block.sale_type !== "كامل" || !block.polygon) return;
-      if (block.status === wantStatus) {
-        ringPolygon(block.polygon);
-      } else {
-        dimPolygon(block.polygon);
-      }
-    });
-    // also dim sale-by-plot blocks and facilities entirely (not part of this view)
-    Object.values(blocksData).forEach((block) => {
-      if (block.polygon && (block.sale_type === "بالقطعة" || block.type === "facility")) {
-        dimPolygon(block.polygon);
+      if (block.type === "block" && block.sale_type === "كامل") {
+        const hull = getBlockTightHull(blockId);
+        if (!hull) return;
+        if (block.status === wantStatus) ringPolygon(hull);
+        else dimPolygon(hull);
+      } else if (block.type === "block" && block.sale_type === "بالقطعة") {
+        const hull = getBlockTightHull(blockId);
+        if (hull) dimPolygon(hull);
+      } else if (block.type === "facility" && block.polygon) {
+        dimPolygon(block.polygon); // facility shapes are already accurate, real click-verified boundaries
       }
     });
   } else if (filterKey === "plots-available") {
     Object.entries(blocksData).forEach(([blockId, block]) => {
-      if (block.type === "block" && block.sale_type === "كامل" && block.polygon) {
-        dimPolygon(block.polygon); // whole-sale blocks aren't part of this view
-      }
-    });
-    Object.values(plotsData).forEach((plot) => {
-      if (!plot.polygon || plot.status == null) return;
-      if (plot.status === "متاحة") {
-        ringPolygon(plot.polygon);
-      } else {
-        dimPolygon(plot.polygon);
+      if (block.type === "block" && block.sale_type === "كامل") {
+        const hull = getBlockTightHull(blockId);
+        if (hull) dimPolygon(hull);
+      } else if (block.type === "block" && block.sale_type === "بالقطعة") {
+        const hull = getBlockTightHull(blockId);
+        if (hull) ringPolygon(hull);
+      } else if (block.type === "facility" && block.polygon) {
+        dimPolygon(block.polygon);
       }
     });
   }
