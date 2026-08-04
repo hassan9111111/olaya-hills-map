@@ -193,15 +193,19 @@ function renderStatusOverlays() {
         }
       }
     } else if (block.sale_type === "بالقطعة") {
-      // ring around the badge marking this block as sold-by-plot
-      if (block.centroid) {
-        const realRadius = block.badge_radius || BADGE_RADIUS;
-        const ring = document.createElementNS(SVG_NS, "circle");
-        ring.setAttribute("cx", block.centroid[0]);
-        ring.setAttribute("cy", block.centroid[1]);
-        ring.setAttribute("r", realRadius + 4);
-        ring.classList.add("sale-by-plot-ring");
-        fragment.appendChild(ring);
+      // dashed outline tracing this block's real outer silhouette — reads
+      // at the block level from a glance, not just as a small badge detail
+      const allPoints = [];
+      block.plot_ids.forEach((pid) => {
+        const plot = plotsData[pid];
+        if (plot && plot.polygon) allPoints.push(...plot.polygon);
+      });
+      if (allPoints.length >= 3) {
+        const hull = convexHull(allPoints);
+        const outlineEl = document.createElementNS(SVG_NS, "polygon");
+        outlineEl.setAttribute("points", pointsToAttr(hull));
+        outlineEl.classList.add("by-plot-block-outline");
+        fragment.appendChild(outlineEl);
       }
       // individual sold plots within this block
       block.plot_ids.forEach((pid) => {
@@ -406,18 +410,10 @@ function buildPlotModalHTML(plotId, plot) {
     <h2 class="modal-title">قطعة ${plot.plot}</h2>
     <p class="modal-subtitle">داخل بلوك ${plot.block}</p>
 
-    <div class="modal-stats">
-      <div>
-        <p class="modal-stat-label">رقم القطعة</p>
-        <p class="modal-stat-value">${plot.plot}</p>
-      </div>
+    <div class="modal-stats modal-stats-single">
       <div>
         <p class="modal-stat-label">المساحة</p>
-        <p class="modal-stat-value">${formatNumber(plot.area)} م²</p>
-      </div>
-      <div>
-        <p class="modal-stat-label">رقم البلوك</p>
-        <p class="modal-stat-value">${plot.block}</p>
+        <p class="modal-stat-value modal-stat-value-lg">${formatNumber(plot.area)} م²</p>
       </div>
     </div>
 
@@ -521,7 +517,7 @@ function openPlotModal(plotId) {
     openBlockModal(plot.block);
   });
 
-  document.getElementById("modal-backdrop").classList.add("is-open");
+  openModalBackdrop();
 }
 
 function openBlockModal(blockId) {
@@ -535,7 +531,7 @@ function openBlockModal(blockId) {
   body.querySelectorAll(".modal-table-row[data-plot-id]").forEach((row) => {
     row.addEventListener("click", () => openPlotModal(row.getAttribute("data-plot-id")));
   });
-  document.getElementById("modal-backdrop").classList.add("is-open");
+  openModalBackdrop();
 }
 
 function openFacilityModal(blockId) {
@@ -546,11 +542,26 @@ function openFacilityModal(blockId) {
 
   const body = document.getElementById("modal-body");
   body.innerHTML = buildFacilityModalHTML(blockId, block);
-  document.getElementById("modal-backdrop").classList.add("is-open");
+  openModalBackdrop();
+}
+
+function openModalBackdrop() {
+  const backdrop = document.getElementById("modal-backdrop");
+  backdrop.classList.add("is-open");
+  // Force a synchronous style flush so the browser commits the "closed"
+  // (pre-transition) state before "is-visible" is added — otherwise the
+  // display and opacity/transform changes can get batched into a single
+  // paint and the transition never visibly plays.
+  void backdrop.offsetHeight;
+  backdrop.classList.add("is-visible");
 }
 
 function closeModal() {
-  document.getElementById("modal-backdrop").classList.remove("is-open");
+  const backdrop = document.getElementById("modal-backdrop");
+  backdrop.classList.remove("is-visible");
+  window.setTimeout(() => {
+    backdrop.classList.remove("is-open");
+  }, 200);
 }
 
 function attachDebugToggle() {

@@ -193,15 +193,20 @@ body {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0);
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 16px;
+  transition: background 0.18s ease;
 }
 
 .modal-backdrop.is-open {
   display: flex;
+}
+
+.modal-backdrop.is-open.is-visible {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .modal {
@@ -216,6 +221,14 @@ body {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
   direction: rtl;
   text-align: right;
+  opacity: 0;
+  transform: scale(0.96) translateY(6px);
+  transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.modal-backdrop.is-visible .modal {
+  opacity: 1;
+  transform: scale(1) translateY(0);
 }
 
 .modal-close {
@@ -358,22 +371,24 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-top: 10px;
-  padding: 10px 18px;
+  gap: 7px;
+  margin-top: 8px;
+  padding: 8px 16px;
   border: 1px solid var(--border-light, #e2e2e2);
   border-radius: 8px;
   background: #fff;
-  color: #1a73e8;
-  font-size: 14px;
-  font-weight: 600;
+  color: #5f6b7a;
+  font-size: 13px;
+  font-weight: 500;
   text-decoration: none;
   width: 100%;
   box-sizing: border-box;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .modal-action-maps:hover {
-  background: #f5f9ff;
+  background: #f7f8fa;
+  border-color: #c8ccd2;
 }
 
 .precision-note {
@@ -473,9 +488,14 @@ body.debug-mode .block-outline-halo {
   .modal {
     max-width: 100%;
     width: 100%;
-    max-height: 88vh;
+    max-height: 75vh;
     border-radius: 20px 20px 0 0;
     padding: 20px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+    transform: translateY(100%);
+  }
+
+  .modal-backdrop.is-visible .modal {
+    transform: translateY(0);
   }
 
   .modal-title {
@@ -671,6 +691,110 @@ body.debug-mode .block-outline-halo {
   stroke-dasharray: 3 2;
   opacity: 0.85;
   pointer-events: none;
+}
+
+/* Whole-block dashed outline marking a "sold by plot" block — traces the
+   real outer silhouette (same tight hull used for the sold-block stroke),
+   so the distinction reads at the block level, not just at its badge. */
+.by-plot-block-outline {
+  fill: none;
+  stroke: #5b6fa8;
+  stroke-width: 1.8;
+  stroke-dasharray: 5 3;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+/* ===== Map hint (quiet call-to-action, first-time orientation) ===== */
+.map-hint {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-muted, #6b6b6b);
+  font-size: 12.5px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .map-hint {
+    font-size: 11.5px;
+    padding: 5px 10px;
+    top: 8px;
+  }
+}
+
+/* ===== Map legend (always-visible corner key) ===== */
+.map-legend {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 10px;
+  padding: 8px 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-dark, #1c1c1c);
+  white-space: nowrap;
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.swatch-residential {
+  background: #7fb3ab;
+}
+.swatch-commercial {
+  background: #e5423a;
+}
+.swatch-available {
+  background: #2f8f5b;
+  border-radius: 50%;
+}
+.swatch-sold {
+  background: #8c8c8c;
+  border-radius: 50%;
+}
+.swatch-by-plot {
+  background: transparent;
+  border: 1.6px dashed #5b6fa8;
+}
+
+@media (max-width: 600px) {
+  .map-legend {
+    bottom: 6px;
+    right: 6px;
+    padding: 6px 9px;
+    gap: 3px;
+  }
+  .legend-item {
+    font-size: 9.5px;
+  }
+  .legend-swatch {
+    width: 8px;
+    height: 8px;
+  }
 }
 
 /* ===== Status badges inside modals ===== */
