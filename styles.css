@@ -897,13 +897,45 @@ body.debug-mode .block-outline-halo {
    dedicated overlay layer in JS, since plot/badge shapes have no fill of
    their own to dim directly — the color comes from the background image) */
 .dim-overlay {
-  fill: rgba(255, 255, 255, 0.68);
+  fill: rgba(235, 235, 232, 0.86);
   pointer-events: none;
 }
 
 .stats-highlight-ring {
   fill: none;
   stroke: #2f8f5b;
-  stroke-width: 2;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 2px rgba(47, 143, 91, 0.5));
   pointer-events: none;
 }
+
+/* ===== "Now showing" filter label ===== */
+.filter-label {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1c1c1c;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 999px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+  z-index: 11;
+  pointer-events: none;
+  white-space: nowrap;
+  display: none;
+}
+
+.filter-label.is-active {
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .filter-label {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+}
+

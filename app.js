@@ -798,10 +798,18 @@ function renderStatsCounts() {
   document.getElementById("count-plots-available").textContent = c.plotsAvailable;
 }
 
+const FILTER_LABELS = {
+  "blocks-available": "يعرض الآن: البلوكات المتاحة فقط",
+  "blocks-sold": "يعرض الآن: البلوكات المباعة فقط",
+  "plots-available": "يعرض الآن: البلوكات المخصصة للبيع بالقطعة",
+};
+
 function clearStatsFilter() {
   activeStatsFilter = null;
   document.getElementById("filter-overlay-layer").innerHTML = "";
   document.querySelectorAll(".stats-card").forEach((c) => c.classList.remove("is-active"));
+  document.getElementById("filter-label").classList.remove("is-active");
+  document.getElementById("map-hint").style.display = "";
 }
 
 function applyStatsFilter(filterKey) {
@@ -876,6 +884,10 @@ function attachStatsBar() {
       activeStatsFilter = key;
       card.classList.add("is-active");
       applyStatsFilter(key);
+      const label = document.getElementById("filter-label");
+      label.textContent = FILTER_LABELS[key] || "";
+      label.classList.add("is-active");
+      document.getElementById("map-hint").style.display = "none";
     });
   });
 }
