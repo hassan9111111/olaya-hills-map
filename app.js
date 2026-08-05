@@ -942,6 +942,22 @@ function attachStatsBar() {
   renderStatsCounts();
 
   document.querySelectorAll(".stats-card").forEach((card) => {
+    // Immediate tactile feedback on press (pointerdown fires instantly,
+    // well before "click" resolves) — a small expanding ripple from the
+    // exact touch point, the same pattern used across modern mobile apps
+    // to confirm "yes, this is a button, and your tap registered."
+    card.addEventListener("pointerdown", (e) => {
+      const rect = card.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height) * 1.8;
+      const ripple = document.createElement("span");
+      ripple.className = "stats-ripple";
+      ripple.style.width = ripple.style.height = size + "px";
+      ripple.style.left = (e.clientX ?? rect.left + rect.width / 2) - rect.left - size / 2 + "px";
+      ripple.style.top = (e.clientY ?? rect.top + rect.height / 2) - rect.top - size / 2 + "px";
+      card.appendChild(ripple);
+      ripple.addEventListener("animationend", () => ripple.remove());
+    });
+
     card.addEventListener("click", () => {
       ensureFocusImagesLoaded();
       const key = card.getAttribute("data-filter");
