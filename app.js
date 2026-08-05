@@ -930,11 +930,20 @@ function applyStatsFilter(filterKey) {
   layer.appendChild(fragment);
 }
 
+let focusImagesLoaded = false;
+function ensureFocusImagesLoaded() {
+  if (focusImagesLoaded) return;
+  focusImagesLoaded = true;
+  document.getElementById("focus-dim-image").setAttribute("href", "map-background-dim.webp");
+  document.getElementById("focus-boost-image").setAttribute("href", "map-background-boost.webp");
+}
+
 function attachStatsBar() {
   renderStatsCounts();
 
   document.querySelectorAll(".stats-card").forEach((card) => {
     card.addEventListener("click", () => {
+      ensureFocusImagesLoaded();
       const key = card.getAttribute("data-filter");
       if (activeStatsFilter === key) {
         clearStatsFilter();

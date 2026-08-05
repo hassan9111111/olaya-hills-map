@@ -108,52 +108,29 @@
     </picture>
     <svg class="overlay" id="overlay" viewBox="0 0 1360.63 1345" preserveAspectRatio="xMidYMid meet">
       <defs>
-        <!-- Cinematic "out of focus" look: heavily desaturated + slightly
-             darkened, NOT hidden. The map stays visually "alive" outside
-             the current filter's focus instead of looking switched off. -->
-        <filter id="focus-dim-filter" x="-5%" y="-5%" width="110%" height="110%">
-          <feColorMatrix type="saturate" values="0.05" />
-          <feComponentTransfer>
-            <feFuncR type="linear" slope="0.62" intercept="0.08" />
-            <feFuncG type="linear" slope="0.62" intercept="0.08" />
-            <feFuncB type="linear" slope="0.62" intercept="0.08" />
-          </feComponentTransfer>
-        </filter>
+        <!-- Cinematic "out of focus" look, built from two PRE-RENDERED
+             full-resolution copies of the background (not a live SVG
+             filter) — a live feColorMatrix/feComponentTransfer filter on a
+             full map image is expensive to rasterize and mobile browsers
+             visibly downgrade its quality, especially while zoomed. A
+             pre-computed image is pixel-identical in sharpness to the
+             normal map at all times, at zero runtime cost. -->
         <clipPath id="focus-dim-clip" clipPathUnits="userSpaceOnUse"></clipPath>
-        <!-- The symmetric opposite of the dim filter: richer color + a
-             touch brighter, applied only to shapes the active filter
-             matches — makes "available" (etc.) genuinely pop forward,
-             not just "left alone" next to a muted background. -->
-        <filter id="focus-boost-filter" x="-5%" y="-5%" width="110%" height="110%">
-          <feColorMatrix type="saturate" values="1.5" />
-          <feComponentTransfer>
-            <feFuncR type="linear" slope="1.1" intercept="0.02" />
-            <feFuncG type="linear" slope="1.1" intercept="0.02" />
-            <feFuncB type="linear" slope="1.1" intercept="0.02" />
-          </feComponentTransfer>
-        </filter>
         <clipPath id="focus-boost-clip" clipPathUnits="userSpaceOnUse"></clipPath>
       </defs>
-      <!-- A second copy of the exact same background, desaturated, shown
-           ONLY inside the current filter's "not the focus" shapes (via the
-           clip path above). Sits above the normal full-color background
-           but below every interactive layer, so clicking is unaffected. -->
+      <!-- Loaded lazily (href set in JS) only the first time a filter is
+           actually used, so visitors who never touch a filter never pay
+           for this extra download. -->
       <image
         id="focus-dim-image"
-        href="map-background-optimized.webp"
         x="0" y="0" width="1360.63" height="1345"
         preserveAspectRatio="none"
-        filter="url(#focus-dim-filter)"
         clip-path="url(#focus-dim-clip)"
       ></image>
-      <!-- Third copy, enhanced, shown only over the matching ("in focus")
-           shapes — the visual pop that makes them stand forward. -->
       <image
         id="focus-boost-image"
-        href="map-background-optimized.webp"
         x="0" y="0" width="1360.63" height="1345"
         preserveAspectRatio="none"
-        filter="url(#focus-boost-filter)"
         clip-path="url(#focus-boost-clip)"
       ></image>
       <!-- Layers are intentionally separate and independent, so future

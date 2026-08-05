@@ -856,11 +856,37 @@ body.debug-mode .block-outline-halo {
   border-radius: 10px;
   padding: 9px 12px;
   cursor: pointer;
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  transition: box-shadow 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+  animation: stats-card-invite 1.6s ease-out 2.6s;
 }
 
 .stats-card:hover {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1.5px);
+  border-color: #c9ccd1;
+}
+
+.stats-card:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+/* A single, gentle "this is pressable" cue right after the intro ends —
+   never repeats, never loops, so it never becomes annoying. */
+@keyframes stats-card-invite {
+  0% {
+    box-shadow: 0 0 0 0 rgba(47, 143, 91, 0);
+  }
+  15% {
+    box-shadow: 0 0 0 5px rgba(47, 143, 91, 0.12);
+  }
+  35% {
+    box-shadow: 0 0 0 0 rgba(47, 143, 91, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(47, 143, 91, 0);
+  }
 }
 
 .stats-card.is-active {
