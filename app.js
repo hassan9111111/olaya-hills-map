@@ -791,16 +791,31 @@ function computeStatsCounts() {
   return { blocksAvailable, blocksSold, plotsAvailable };
 }
 
+// Smooth ease-out count-up (0 → target) — plays once on load, ~900ms,
+// so the stats bar feels alive on first paint without being showy.
+function animateCountUp(el, target, duration = 900, suffix = "") {
+  const start = performance.now();
+  function tick(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+    const value = Math.round(target * eased);
+    el.textContent = value + suffix;
+    if (t < 1) requestAnimationFrame(tick);
+    else el.textContent = target + suffix;
+  }
+  requestAnimationFrame(tick);
+}
+
 function renderStatsCounts() {
   const c = computeStatsCounts();
-  document.getElementById("count-blocks-available").textContent = c.blocksAvailable;
-  document.getElementById("count-blocks-sold").textContent = c.blocksSold;
-  document.getElementById("count-plots-available").textContent = c.plotsAvailable;
+  animateCountUp(document.getElementById("count-blocks-available"), c.blocksAvailable);
+  animateCountUp(document.getElementById("count-blocks-sold"), c.blocksSold);
+  animateCountUp(document.getElementById("count-plots-available"), c.plotsAvailable);
 
   const totalWholeSale = c.blocksAvailable + c.blocksSold;
   const soldPct = totalWholeSale > 0 ? Math.round((c.blocksSold / totalWholeSale) * 100) : 0;
   document.getElementById("stats-progress-fill").style.width = soldPct + "%";
-  document.getElementById("stats-progress-pct").textContent = soldPct + "%";
+  animateCountUp(document.getElementById("stats-progress-pct"), soldPct, 900, "%");
 }
 
 const FILTER_LABELS = {
@@ -808,17 +823,26 @@ const FILTER_LABELS = {
   "plots-available": "يعرض الآن: القطع المتاحة ضمن بلوكات البيع بالقطعة",
 };
 
+let statsFilterGeneration = 0;
+
 function clearStatsFilter() {
   activeStatsFilter = null;
-  document.getElementById("filter-overlay-layer").innerHTML = "";
-  document.getElementById("focus-dim-clip").innerHTML = "";
-  document.getElementById("focus-boost-clip").innerHTML = "";
+  document.body.classList.remove("filters-active");
+  const myGeneration = ++statsFilterGeneration;
+  window.setTimeout(() => {
+    if (myGeneration !== statsFilterGeneration) return; // a newer filter/clear superseded this one
+    document.getElementById("filter-overlay-layer").innerHTML = "";
+    document.getElementById("focus-dim-clip").innerHTML = "";
+    document.getElementById("focus-boost-clip").innerHTML = "";
+  }, 300);
   document.querySelectorAll(".stats-card").forEach((c) => c.classList.remove("is-active"));
   document.getElementById("filter-label").classList.remove("is-active");
   document.getElementById("map-hint").style.display = "";
 }
 
 function applyStatsFilter(filterKey) {
+  statsFilterGeneration++;
+  document.body.classList.add("filters-active");
   const layer = document.getElementById("filter-overlay-layer");
   layer.innerHTML = "";
   const clipPath = document.getElementById("focus-dim-clip");

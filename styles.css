@@ -972,6 +972,22 @@ body.debug-mode .block-outline-halo {
 #focus-dim-image,
 #focus-boost-image {
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+body.filters-active #focus-dim-image,
+body.filters-active #focus-boost-image {
+  opacity: 1;
+}
+
+#filter-overlay-layer {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+body.filters-active #filter-overlay-layer {
+  opacity: 1;
 }
 
 .stats-highlight-ring {
@@ -987,7 +1003,7 @@ body.debug-mode .block-outline-halo {
   position: absolute;
   top: 10px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(-4px);
   background: #1c1c1c;
   color: #fff;
   font-size: 12.5px;
@@ -998,11 +1014,13 @@ body.debug-mode .block-outline-halo {
   z-index: 11;
   pointer-events: none;
   white-space: nowrap;
-  display: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 .filter-label.is-active {
-  display: block;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 @media (max-width: 600px) {
