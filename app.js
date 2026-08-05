@@ -938,6 +938,7 @@ async function init() {
   attachDebugToggle();
   attachSearch();
   attachStatsBar();
+  window.dispatchEvent(new Event("olaya-map-ready"));
 }
 
 init();

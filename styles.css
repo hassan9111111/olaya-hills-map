@@ -1024,8 +1024,13 @@ body.debug-mode .block-outline-halo {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  animation: intro-screen-fadeout 0.6s ease forwards;
-  animation-delay: 1.9s;
+  opacity: 1;
+  transition: opacity 0.45s ease;
+}
+
+.intro-screen.intro-hide {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .intro-screen.intro-skip {

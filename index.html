@@ -5,31 +5,50 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>مخطط العليا هيلز التفاعلي</title>
 <link rel="preload" as="image" href="map-background-optimized.webp" type="image/webp" />
-<link rel="preload" as="image" href="logo-extracted.png" />
+<link rel="preload" as="image" href="logo-official.png" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
   <div class="intro-screen" id="intro-screen">
-    <img class="intro-logo" src="logo-extracted.png" alt="العليا هيلز" />
+    <img class="intro-logo" src="logo-official.png" alt="شركة العليا" />
     <p class="intro-title">مخطط العليا هيلز</p>
-    <p class="intro-subtitle">المخطط التفاعلي</p>
+    <p class="intro-subtitle">الخريطة التفاعلية</p>
   </div>
   <script>
-    // Runs immediately, before the rest of the page paints, so a returning
-    // visitor within the same browser session never sees even a flash of
-    // the intro — sessionStorage clears naturally on browser/tab close, so
-    // it plays again on a genuinely new visit.
+    // The intro's exit is tied to the map's ACTUAL readiness (the
+    // "olaya-map-ready" event dispatched at the end of app.js's init()),
+    // not a blind timer — on a slow connection the intro simply stays a
+    // little longer instead of fading out to reveal an unfinished map.
+    // A minimum display time keeps the animation feeling intentional even
+    // when data loads instantly, and a generous safety timeout guarantees
+    // the intro can never get stuck forever if something goes wrong.
     (function () {
-      if (sessionStorage.getItem("olayaIntroShown")) {
-        document.getElementById("intro-screen").classList.add("intro-skip");
-      } else {
-        sessionStorage.setItem("olayaIntroShown", "1");
+      var MIN_DISPLAY_MS = 1500;
+      var SAFETY_MAX_MS = 5000;
+      var start = Date.now();
+      var hidden = false;
+
+      function hideIntro() {
+        if (hidden) return;
+        hidden = true;
+        var el = document.getElementById("intro-screen");
+        if (!el) return;
+        el.classList.add("intro-hide");
         window.setTimeout(function () {
-          var el = document.getElementById("intro-screen");
-          if (el) el.remove();
-        }, 2600);
+          el.remove();
+        }, 500);
       }
+
+      function onReady() {
+        var elapsed = Date.now() - start;
+        var remaining = MIN_DISPLAY_MS - elapsed;
+        if (remaining > 0) window.setTimeout(hideIntro, remaining);
+        else hideIntro();
+      }
+
+      window.addEventListener("olaya-map-ready", onReady, { once: true });
+      window.setTimeout(hideIntro, SAFETY_MAX_MS);
     })();
   </script>
 
