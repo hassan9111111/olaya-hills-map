@@ -838,45 +838,22 @@ body.debug-mode .block-outline-halo {
   }
 }
 
-.stats-card:hover {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1.5px);
-  border-color: #c9ccd1;
-}
-
-.stats-card:active {
-  transform: translateY(0) scale(0.97);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
-}
-
-/* A single, gentle "this is pressable" cue right after the intro ends —
-   never repeats, never loops, so it never becomes annoying. */
-@keyframes stats-card-invite {
-  0% {
-    box-shadow: 0 0 0 0 rgba(47, 143, 91, 0);
-  }
-  15% {
-    box-shadow: 0 0 0 5px rgba(47, 143, 91, 0.12);
-  }
-  35% {
-    box-shadow: 0 0 0 0 rgba(47, 143, 91, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(47, 143, 91, 0);
-  }
-}
-
-.stats-card.is-active {
-  border-color: #2f8f5b;
-  box-shadow: 0 0 0 1.5px #2f8f5b inset;
+.stats-card {
+  flex: 1 1 130px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--border-light, #e2e2e2);
+  border-radius: 10px;
+  padding: 7px 12px;
 }
 
 .stats-card.stats-card-combined {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   text-align: center;
 }
 

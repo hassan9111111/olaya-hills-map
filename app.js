@@ -196,64 +196,59 @@ function getBlockTightHull(blockId) {
   return hull;
 }
 
-function renderStatusOverlays() {
-  const layer = document.getElementById("status-overlay-layer");
-  layer.innerHTML = "";
-  const fragment = document.createDocumentFragment();
+function renderPermanentStatus() {
+  ensureFocusImagesLoaded();
+  const dimClip = document.getElementById("focus-dim-clip");
+  const boostClip = document.getElementById("focus-boost-clip");
+  dimClip.innerHTML = "";
+  boostClip.innerHTML = "";
+  const dimFrag = document.createDocumentFragment();
+  const boostFrag = document.createDocumentFragment();
+  const outlineFrag = document.createDocumentFragment();
+  const outlineLayer = document.getElementById("status-overlay-layer");
+  outlineLayer.innerHTML = "";
+
+  function addShape(frag, poly) {
+    const el = document.createElementNS(SVG_NS, "polygon");
+    el.setAttribute("points", pointsToAttr(poly));
+    frag.appendChild(el);
+  }
 
   Object.entries(blocksData).forEach(([blockId, block]) => {
     if (block.type !== "block") return;
 
     if (block.sale_type === "كامل") {
-      if (block.status === "مباع") {
-        // Fill: each real plot polygon individually — guarantees the
-        // shading never extends past a true plot boundary into a street,
-        // sidewalk, median, or landscaped strip, no matter how irregular
-        // the block's overall shape is.
-        const allPoints = [];
-        block.plot_ids.forEach((pid) => {
-          const plot = plotsData[pid];
-          if (!plot || !plot.polygon) return;
-          allPoints.push(...plot.polygon);
-          const fillEl = document.createElementNS(SVG_NS, "polygon");
-          fillEl.setAttribute("points", pointsToAttr(plot.polygon));
-          fillEl.classList.add("sold-overlay-fill");
-          fragment.appendChild(fillEl);
-        });
-        // Stroke: the shared tight hull, so the outer outline hugs the
-        // actual block silhouette instead of a looser pre-computed shape.
-        const hull = getBlockTightHull(blockId);
-        if (hull) {
-          const strokeEl = document.createElementNS(SVG_NS, "polygon");
-          strokeEl.setAttribute("points", pointsToAttr(hull));
-          strokeEl.classList.add("sold-overlay-stroke");
-          fragment.appendChild(strokeEl);
-        }
-      }
+      const target = block.status === "مباع" ? dimFrag : block.status === "متاح" ? boostFrag : null;
+      if (!target) return;
+      block.plot_ids.forEach((pid) => {
+        const plot = plotsData[pid];
+        if (plot && plot.polygon) addShape(target, plot.polygon);
+      });
     } else if (block.sale_type === "بالقطعة") {
       // dashed outline tracing this block's real outer silhouette — reads
-      // at the block level from a glance, not just as a small badge detail
+      // at the block level from a glance, marking it as the by-plot
+      // exception before the user even taps anything.
       const hull = getBlockTightHull(blockId);
       if (hull) {
         const outlineEl = document.createElementNS(SVG_NS, "polygon");
         outlineEl.setAttribute("points", pointsToAttr(hull));
         outlineEl.classList.add("by-plot-block-outline");
-        fragment.appendChild(outlineEl);
+        outlineFrag.appendChild(outlineEl);
       }
-      // individual sold plots within this block
+      // each plot in a by-plot block shows its own status individually
       block.plot_ids.forEach((pid) => {
         const plot = plotsData[pid];
-        if (plot && plot.status === "مباعة" && plot.polygon) {
-          const el = document.createElementNS(SVG_NS, "polygon");
-          el.setAttribute("points", pointsToAttr(plot.polygon));
-          el.classList.add("sold-overlay");
-          fragment.appendChild(el);
-        }
+        if (!plot || !plot.polygon) return;
+        if (plot.status === "مباعة") addShape(dimFrag, plot.polygon);
+        else if (plot.status === "متاحة") addShape(boostFrag, plot.polygon);
       });
     }
   });
 
-  layer.appendChild(fragment);
+  dimClip.appendChild(dimFrag);
+  boostClip.appendChild(boostFrag);
+  outlineLayer.appendChild(outlineFrag);
+  document.body.classList.add("filters-active"); // reuses the existing fade-in transition
 }
 
 /* ---------------- Interaction wiring ---------------- */
@@ -275,30 +270,22 @@ function pointInCircle(x, y, cx, cy, r) {
 }
 
 // Resolve a click/tap to exactly one target, using shape priority rather
-// than DOM stacking order. Three tiers:
-//   1. The badge's small "core" — tapping the printed number itself always
-//      opens that block directly, even if a plot polygon technically
-//      reaches under it. This preserves one-tap block access everywhere.
-//   2. Real plot/facility polygons — win over the WIDER touch-enlarged badge
-//      area, so an enlarged badge can never swallow a nearby plot's tap.
-//   3. The full touch-enlarged badge radius — fallback for open space near
-//      the badge that no plot actually covers.
+// than DOM stacking order.
 //
-// A few single-plot commercial blocks (25, 28, 31) have their one plot's
-// centroid sitting almost exactly on the badge center, which made that
-// plot's natural center point unreachable under the default core radius.
-// Rather than changing behavior for all 44 blocks, these three get a much
-// smaller core override — block access still works with a precise tap,
-// while the rest of their (large) plot area opens normally.
-const BADGE_CORE_RADIUS_OVERRIDES = { 25: 2, 28: 2, 31: 2 };
-
+// Whole-sale blocks are sold as one unit, so tapping ANY of their plots
+// (or their badge) opens that block's own details — not the individual
+// plot. Only the three sale-by-plot blocks keep true plot-level tapping,
+// each plot opening its own details directly. This also means there is
+// no leftover "dead zone": every point on the map resolves to something.
 function resolveMapClick(svgX, svgY) {
-  const DEFAULT_CORE_RADIUS = 6; // matches the printed circle's real visual size
-
+  // The by-plot blocks' printed number needs to reliably open the block's
+  // own details (full plot table) even when the badge center happens to
+  // sit inside one of its own plots — a small precise "core" around the
+  // number wins first, before plot polygons get their turn.
+  const BADGE_CORE_RADIUS = 6;
   for (const [blockId, block] of Object.entries(blocksData)) {
-    if (block.type === "block" && block.centroid) {
-      const coreR = BADGE_CORE_RADIUS_OVERRIDES[blockId] ?? DEFAULT_CORE_RADIUS;
-      if (pointInCircle(svgX, svgY, block.centroid[0], block.centroid[1], coreR)) {
+    if (block.type === "block" && block.sale_type === "بالقطعة" && block.centroid) {
+      if (pointInCircle(svgX, svgY, block.centroid[0], block.centroid[1], BADGE_CORE_RADIUS)) {
         return { type: "block", id: blockId };
       }
     }
@@ -306,7 +293,11 @@ function resolveMapClick(svgX, svgY) {
 
   for (const [plotId, plot] of Object.entries(plotsData)) {
     if (plot.polygon && pointInPolygon(svgX, svgY, plot.polygon)) {
-      return { type: "plot", id: plotId };
+      const parentBlock = blocksData[plot.block];
+      if (parentBlock && parentBlock.sale_type === "بالقطعة") {
+        return { type: "plot", id: plotId };
+      }
+      return { type: "block", id: plot.block };
     }
   }
   for (const [blockId, block] of Object.entries(blocksData)) {
@@ -439,9 +430,10 @@ function buildPlotModalHTML(plotId, plot) {
   const parentBlock = blocksData[plot.block];
   const isInSoldWholeBlock =
     parentBlock && parentBlock.sale_type === "كامل" && parentBlock.status === "مباع";
+  const isByPlotBlock = parentBlock && parentBlock.sale_type === "بالقطعة";
   const isAvailable = plot.status !== "مباعة" && !isInSoldWholeBlock;
 
-  const interestBtn = isAvailable
+  const interestBtn = isAvailable && isByPlotBlock
     ? buildInterestBtn(`مرحباً، أنا مهتم بقطعة رقم ${plot.plot}، بلوك ${plot.block}، مساحة ${formatNumber(plot.area)} م²، من مخطط العليا هيلز.`, "أنا مهتم بهذي القطعة")
     : "";
 
@@ -860,118 +852,6 @@ function renderStatsCounts() {
   animateCountUp(document.getElementById("stats-progress-pct"), soldPct, 900, "%");
 }
 
-const FILTER_LABELS = {
-  "blocks-available": "يعرض الآن: حالة البلوكات — متاح مقابل مباع",
-  "plots-available": "يعرض الآن: القطع المتاحة ضمن بلوكات البيع بالقطعة",
-};
-
-let statsFilterGeneration = 0;
-
-function clearStatsFilter() {
-  activeStatsFilter = null;
-  document.body.classList.remove("filters-active");
-  const myGeneration = ++statsFilterGeneration;
-  window.setTimeout(() => {
-    if (myGeneration !== statsFilterGeneration) return; // a newer filter/clear superseded this one
-    document.getElementById("filter-overlay-layer").innerHTML = "";
-    document.getElementById("focus-dim-clip").innerHTML = "";
-    document.getElementById("focus-boost-clip").innerHTML = "";
-  }, 300);
-  document.querySelectorAll(".stats-card").forEach((c) => c.classList.remove("is-active"));
-  document.getElementById("filter-label").classList.remove("is-active");
-  document.getElementById("map-hint").style.display = "";
-}
-
-function applyStatsFilter(filterKey) {
-  statsFilterGeneration++;
-  document.body.classList.add("filters-active");
-  const layer = document.getElementById("filter-overlay-layer");
-  layer.innerHTML = "";
-  const clipPath = document.getElementById("focus-dim-clip");
-  clipPath.innerHTML = "";
-  const boostClipPath = document.getElementById("focus-boost-clip");
-  boostClipPath.innerHTML = "";
-  const fragment = document.createDocumentFragment();
-  const clipFragment = document.createDocumentFragment();
-  const boostClipFragment = document.createDocumentFragment();
-
-  // Cinematic "out of focus" effect: elements NOT matching the filter stay
-  // fully visible in structure, but render through a desaturated + slightly
-  // darkened copy of the same background (the clip-path below controls
-  // exactly which real, click-verified plot shapes get that treatment) —
-  // plus a very light overlay for a touch of extra depth. Matching elements
-  // get the symmetric opposite treatment (richer color, brighter) so they
-  // genuinely pop forward instead of just being "left alone".
-  function dimPolygon(poly) {
-    const pts = pointsToAttr(poly);
-
-    const clipShape = document.createElementNS(SVG_NS, "polygon");
-    clipShape.setAttribute("points", pts);
-    clipFragment.appendChild(clipShape);
-
-    const el = document.createElementNS(SVG_NS, "polygon");
-    el.setAttribute("points", pts);
-    el.classList.add("dim-overlay");
-    fragment.appendChild(el);
-  }
-  function boostPolygon(poly) {
-    const el = document.createElementNS(SVG_NS, "polygon");
-    el.setAttribute("points", pointsToAttr(poly));
-    boostClipFragment.appendChild(el);
-  }
-  function dimBlockByPlots(block) {
-    block.plot_ids.forEach((pid) => {
-      const plot = plotsData[pid];
-      if (plot && plot.polygon) dimPolygon(plot.polygon);
-    });
-  }
-  function boostBlockByPlots(block) {
-    block.plot_ids.forEach((pid) => {
-      const plot = plotsData[pid];
-      if (plot && plot.polygon) boostPolygon(plot.polygon);
-    });
-  }
-
-  if (filterKey === "blocks-available" || filterKey === "blocks-sold") {
-    const wantStatus = filterKey === "blocks-available" ? "متاح" : "مباع";
-    Object.entries(blocksData).forEach(([blockId, block]) => {
-      if (block.type === "block" && block.sale_type === "كامل") {
-        if (block.status === wantStatus) {
-          boostBlockByPlots(block);
-        } else {
-          dimBlockByPlots(block);
-        }
-      } else if (block.type === "block" && block.sale_type === "بالقطعة") {
-        dimBlockByPlots(block);
-      } else if (block.type === "facility" && block.polygon) {
-        dimPolygon(block.polygon); // facility shapes are already accurate, real click-verified boundaries
-      }
-    });
-  } else if (filterKey === "plots-available") {
-    Object.entries(blocksData).forEach(([blockId, block]) => {
-      if (block.type === "block" && block.sale_type === "كامل") {
-        dimBlockByPlots(block);
-      } else if (block.type === "block" && block.sale_type === "بالقطعة") {
-        // The block itself stays in full focus — but within it, sold plots
-        // fall out of focus individually too, so "which plots are actually
-        // available" is answered right here, without a click per plot.
-        block.plot_ids.forEach((pid) => {
-          const plot = plotsData[pid];
-          if (!plot || !plot.polygon) return;
-          if (plot.status === "مباعة") dimPolygon(plot.polygon);
-          else boostPolygon(plot.polygon);
-        });
-      } else if (block.type === "facility" && block.polygon) {
-        dimPolygon(block.polygon);
-      }
-    });
-  }
-
-  clipPath.appendChild(clipFragment);
-  boostClipPath.appendChild(boostClipFragment);
-  layer.appendChild(fragment);
-}
-
 let focusImagesLoaded = false;
 function ensureFocusImagesLoaded() {
   if (focusImagesLoaded) return;
@@ -982,41 +862,6 @@ function ensureFocusImagesLoaded() {
 
 function attachStatsBar() {
   renderStatsCounts();
-
-  document.querySelectorAll(".stats-card").forEach((card) => {
-    // Immediate tactile feedback on press (pointerdown fires instantly,
-    // well before "click" resolves) — a small expanding ripple from the
-    // exact touch point, the same pattern used across modern mobile apps
-    // to confirm "yes, this is a button, and your tap registered."
-    card.addEventListener("pointerdown", (e) => {
-      const rect = card.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height) * 1.8;
-      const ripple = document.createElement("span");
-      ripple.className = "stats-ripple";
-      ripple.style.width = ripple.style.height = size + "px";
-      ripple.style.left = (e.clientX ?? rect.left + rect.width / 2) - rect.left - size / 2 + "px";
-      ripple.style.top = (e.clientY ?? rect.top + rect.height / 2) - rect.top - size / 2 + "px";
-      card.appendChild(ripple);
-      ripple.addEventListener("animationend", () => ripple.remove());
-    });
-
-    card.addEventListener("click", () => {
-      ensureFocusImagesLoaded();
-      const key = card.getAttribute("data-filter");
-      if (activeStatsFilter === key) {
-        clearStatsFilter();
-        return;
-      }
-      clearStatsFilter();
-      activeStatsFilter = key;
-      card.classList.add("is-active");
-      applyStatsFilter(key);
-      const label = document.getElementById("filter-label");
-      label.textContent = FILTER_LABELS[key] || "";
-      label.classList.add("is-active");
-      document.getElementById("map-hint").style.display = "none";
-    });
-  });
 }
 
 async function init() {
@@ -1025,6 +870,7 @@ async function init() {
   renderFacilities();
   renderPlots();
   renderBadges();
+  renderPermanentStatus();
   attachInteractions();
   attachDebugToggle();
   attachSearch();
