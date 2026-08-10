@@ -36,7 +36,7 @@ const SALES_REPS = {
   ali: { name: "علي", phone: "966550017243" },
   hassan: { name: "حسن", phone: "966504669338" },
 };
-const DEFAULT_REP_KEY = "abdulrahman";
+const DEFAULT_REP_KEY = "hassan";
 
 function getActiveRep() {
   const params = new URLSearchParams(window.location.search);
