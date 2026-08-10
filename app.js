@@ -498,6 +498,14 @@ function buildBlockModalHTML(blockId, block) {
 }
 
 function buildFacilityModalHTML(blockId, block) {
+  const mapsBtn =
+    block.lat != null && block.lng != null
+      ? `<a class="modal-action modal-action-maps" href="https://www.google.com/maps?q=${block.lat},${block.lng}" target="_blank" rel="noopener">
+           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+           فتح الموقع في خرائط جوجل
+         </a>`
+      : "";
+
   return `
     <span class="badge usage-facility">مرفق</span>
     <h2 class="modal-title">${block.name}</h2>
@@ -517,6 +525,7 @@ function buildFacilityModalHTML(blockId, block) {
         <p class="modal-stat-value">غير معروض للبيع</p>
       </div>
     </div>
+    ${mapsBtn}
   `;
 }
 
