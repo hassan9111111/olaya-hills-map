@@ -27,6 +27,23 @@ const BLOCKS_URL = "blocks-data.json";
 const PLOTS_URL = "plots-data.json";
 const BADGE_RADIUS = 6; // pt, small enough to avoid covering nearby plot centers
 
+// Sales reps: whoever opens the link with ?m=<key> gets all "أنا مهتم"
+// WhatsApp buttons routed to their own number, so a lead from a shared
+// link always reaches the rep who actually sent it. No key present ->
+// falls back to the manager.
+const SALES_REPS = {
+  abdulrahman: { name: "عبدالرحمن", phone: "966555585852" },
+  ali: { name: "علي", phone: "966550017243" },
+  hassan: { name: "حسن", phone: "966504669338" },
+};
+const DEFAULT_REP_KEY = "abdulrahman";
+
+function getActiveRep() {
+  const params = new URLSearchParams(window.location.search);
+  const key = params.get("m");
+  return SALES_REPS[key] || SALES_REPS[DEFAULT_REP_KEY];
+}
+
 let blocksData = {};
 let plotsData = {};
 let highlightedPlotId = null;
@@ -401,6 +418,15 @@ function formatNumber(n) {
   return Math.round(n).toLocaleString("en-US");
 }
 
+function buildInterestBtn(message) {
+  const rep = getActiveRep();
+  const url = `https://wa.me/${rep.phone}?text=${encodeURIComponent(message)}`;
+  return `<a class="modal-action modal-action-interest" href="${url}" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm5.8 14.1c-.24.68-1.4 1.3-1.94 1.38-.5.08-1.11.11-1.79-.11-.41-.13-.94-.31-1.61-.6-2.84-1.23-4.69-4.09-4.83-4.28-.14-.19-1.15-1.53-1.15-2.92 0-1.39.73-2.07.99-2.35.26-.28.57-.35.76-.35.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.58.81 2 .88 2.14.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.28.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.61-.07.16-.19.7-.81.89-1.09.19-.28.37-.23.63-.14.26.1 1.65.78 1.94.92.28.14.47.21.54.33.07.12.07.68-.17 1.36Z"/></svg>
+      أنا مهتم بهذي القطعة
+    </a>`;
+}
+
 function buildPlotModalHTML(plotId, plot) {
   const mapsBtn =
     plot.lat != null && plot.lng != null
@@ -413,6 +439,11 @@ function buildPlotModalHTML(plotId, plot) {
   const parentBlock = blocksData[plot.block];
   const isInSoldWholeBlock =
     parentBlock && parentBlock.sale_type === "كامل" && parentBlock.status === "مباع";
+  const isAvailable = plot.status !== "مباعة" && !isInSoldWholeBlock;
+
+  const interestBtn = isAvailable
+    ? buildInterestBtn(`مرحباً، أنا مهتم بقطعة رقم ${plot.plot}، بلوك ${plot.block}، مساحة ${formatNumber(plot.area)} م²، من مخطط العليا هيلز.`)
+    : "";
 
   const soldBanner =
     plot.status === "مباعة"
@@ -437,6 +468,7 @@ function buildPlotModalHTML(plotId, plot) {
     <button class="modal-action" id="view-block-btn" data-block-id="${plot.block}">
       عرض تفاصيل البلوك
     </button>
+    ${interestBtn}
     ${mapsBtn}
   `;
 }
@@ -494,6 +526,7 @@ function buildBlockModalHTML(blockId, block) {
         <tbody>${rows}</tbody>
       </table>
     </div>
+    ${!isByPlot && block.status === "متاح" ? buildInterestBtn(`مرحباً، أنا مهتم ببلوك رقم ${blockId} كامل، مساحة ${formatNumber(block.total_area)} م²، من مخطط العليا هيلز.`) : ""}
   `;
 }
 

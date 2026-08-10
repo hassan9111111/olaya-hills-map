@@ -401,6 +401,33 @@ body {
   border-color: #c8ccd2;
 }
 
+.modal-action-interest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #25d366;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.modal-action-interest:hover {
+  background: #1fbd5a;
+}
+
+.modal-action-interest:active {
+  transform: scale(0.98);
+}
+
 .precision-note {
   font-size: 11px;
   color: var(--text-muted);
