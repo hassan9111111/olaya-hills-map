@@ -997,10 +997,14 @@ function renderPermanentStatus() {
         // outline, so the badge never ends up sitting out on the street.
         const blockOutline = getBlockTrueOutline(blockId);
         const candidates = [];
-        const angleSteps = 16;
-        for (const dist of [realRadius + 5, realRadius + 12, realRadius + 20, realRadius + 30, realRadius + 42]) {
-          for (let i = 0; i < angleSteps; i++) {
-            const angle = (i / angleSteps) * Math.PI * 2;
+        // Preferred directions in priority order (right, below, left,
+        // above, then the four diagonals) — tried at increasing distance —
+        // so the badge lands in the same relative spot across all three
+        // blocks whenever the layout allows it, instead of an arbitrary
+        // angle that happened to be free.
+        const preferredAngles = [0, 90, 180, 270, 45, 135, 225, 315].map((deg) => (deg * Math.PI) / 180);
+        for (const dist of [realRadius + 4, realRadius + 8, realRadius + 14, realRadius + 22, realRadius + 32, realRadius + 44]) {
+          for (const angle of preferredAngles) {
             const cx = block.centroid[0] + Math.cos(angle) * dist;
             const cy = block.centroid[1] + Math.sin(angle) * dist;
             if (blockOutline && !pointInPolygon(cx, cy, blockOutline)) continue;
@@ -1008,7 +1012,6 @@ function renderPermanentStatus() {
           }
         }
         if (candidates.length === 0) {
-          // Extremely thin/small block — fall back to right below the badge
           candidates.push([block.centroid[0], block.centroid[1] + realRadius + 5]);
         }
 
