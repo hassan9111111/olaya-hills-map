@@ -986,41 +986,13 @@ function renderPermanentStatus() {
     } else if (block.sale_type === "بالقطعة") {
       if (block.centroid) {
         const realRadius = block.badge_radius || BADGE_RADIUS;
-        const dotRadius = 3.2;
-        const dist = realRadius + dotRadius + 1.5; // just outside the badge's own edge
+        const dotRadius = 3.0;
+        // Positioned INSIDE the badge circle itself, to the right of the
+        // block number — a classification mark fused into the badge, not
+        // a separate element floating over the map.
+        const cx = block.centroid[0] + realRadius * 0.34;
+        const cy = block.centroid[1];
 
-        // A small notification-style dot attached directly to the badge
-        // circle — top-right first (the conventional "badge indicator"
-        // position), falling back to other corners only if that exact
-        // spot happens to land on a plot polygon.
-        const preferredAngles = [-45, 45, -135, 135, 0, 90, 180, 270].map((deg) => (deg * Math.PI) / 180);
-        const blockOutline = getBlockTrueOutline(blockId);
-
-        function dotOverlapsAnyPlot(cx, cy) {
-          if (blockOutline && !pointInPolygon(cx, cy, blockOutline)) return true;
-          for (const plot of Object.values(plotsData)) {
-            if (!plot.polygon) continue;
-            if (pointInPolygon(cx, cy, plot.polygon)) return true;
-          }
-          return false;
-        }
-
-        let chosen = null;
-        for (const angle of preferredAngles) {
-          const cx = block.centroid[0] + Math.cos(angle) * dist;
-          const cy = block.centroid[1] + Math.sin(angle) * dist;
-          if (!dotOverlapsAnyPlot(cx, cy)) {
-            chosen = [cx, cy];
-            break;
-          }
-        }
-        if (!chosen) {
-          // Fallback: top-right regardless — still just outside the badge,
-          // never covering the number itself.
-          chosen = [block.centroid[0] + Math.cos(-Math.PI / 4) * dist, block.centroid[1] + Math.sin(-Math.PI / 4) * dist];
-        }
-
-        const [cx, cy] = chosen;
         const dot = document.createElementNS(SVG_NS, "circle");
         dot.setAttribute("cx", cx);
         dot.setAttribute("cy", cy);
