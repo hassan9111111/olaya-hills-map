@@ -196,59 +196,64 @@ function getBlockTightHull(blockId) {
   return hull;
 }
 
-function renderPermanentStatus() {
-  ensureFocusImagesLoaded();
-  const dimClip = document.getElementById("focus-dim-clip");
-  const boostClip = document.getElementById("focus-boost-clip");
-  dimClip.innerHTML = "";
-  boostClip.innerHTML = "";
-  const dimFrag = document.createDocumentFragment();
-  const boostFrag = document.createDocumentFragment();
-  const outlineFrag = document.createDocumentFragment();
-  const outlineLayer = document.getElementById("status-overlay-layer");
-  outlineLayer.innerHTML = "";
-
-  function addShape(frag, poly) {
-    const el = document.createElementNS(SVG_NS, "polygon");
-    el.setAttribute("points", pointsToAttr(poly));
-    frag.appendChild(el);
-  }
+function renderStatusOverlays() {
+  const layer = document.getElementById("status-overlay-layer");
+  layer.innerHTML = "";
+  const fragment = document.createDocumentFragment();
 
   Object.entries(blocksData).forEach(([blockId, block]) => {
     if (block.type !== "block") return;
 
     if (block.sale_type === "كامل") {
-      const target = block.status === "مباع" ? dimFrag : block.status === "متاح" ? boostFrag : null;
-      if (!target) return;
-      block.plot_ids.forEach((pid) => {
-        const plot = plotsData[pid];
-        if (plot && plot.polygon) addShape(target, plot.polygon);
-      });
+      if (block.status === "مباع") {
+        // Fill: each real plot polygon individually — guarantees the
+        // shading never extends past a true plot boundary into a street,
+        // sidewalk, median, or landscaped strip, no matter how irregular
+        // the block's overall shape is.
+        const allPoints = [];
+        block.plot_ids.forEach((pid) => {
+          const plot = plotsData[pid];
+          if (!plot || !plot.polygon) return;
+          allPoints.push(...plot.polygon);
+          const fillEl = document.createElementNS(SVG_NS, "polygon");
+          fillEl.setAttribute("points", pointsToAttr(plot.polygon));
+          fillEl.classList.add("sold-overlay-fill");
+          fragment.appendChild(fillEl);
+        });
+        // Stroke: the shared tight hull, so the outer outline hugs the
+        // actual block silhouette instead of a looser pre-computed shape.
+        const hull = getBlockTightHull(blockId);
+        if (hull) {
+          const strokeEl = document.createElementNS(SVG_NS, "polygon");
+          strokeEl.setAttribute("points", pointsToAttr(hull));
+          strokeEl.classList.add("sold-overlay-stroke");
+          fragment.appendChild(strokeEl);
+        }
+      }
     } else if (block.sale_type === "بالقطعة") {
       // dashed outline tracing this block's real outer silhouette — reads
-      // at the block level from a glance, marking it as the by-plot
-      // exception before the user even taps anything.
+      // at the block level from a glance, not just as a small badge detail
       const hull = getBlockTightHull(blockId);
       if (hull) {
         const outlineEl = document.createElementNS(SVG_NS, "polygon");
         outlineEl.setAttribute("points", pointsToAttr(hull));
         outlineEl.classList.add("by-plot-block-outline");
-        outlineFrag.appendChild(outlineEl);
+        fragment.appendChild(outlineEl);
       }
-      // each plot in a by-plot block shows its own status individually
+      // individual sold plots within this block
       block.plot_ids.forEach((pid) => {
         const plot = plotsData[pid];
-        if (!plot || !plot.polygon) return;
-        if (plot.status === "مباعة") addShape(dimFrag, plot.polygon);
-        else if (plot.status === "متاحة") addShape(boostFrag, plot.polygon);
+        if (plot && plot.status === "مباعة" && plot.polygon) {
+          const el = document.createElementNS(SVG_NS, "polygon");
+          el.setAttribute("points", pointsToAttr(plot.polygon));
+          el.classList.add("sold-overlay");
+          fragment.appendChild(el);
+        }
       });
     }
   });
 
-  dimClip.appendChild(dimFrag);
-  boostClip.appendChild(boostFrag);
-  outlineLayer.appendChild(outlineFrag);
-  document.body.classList.add("filters-active"); // reuses the existing fade-in transition
+  layer.appendChild(fragment);
 }
 
 /* ---------------- Interaction wiring ---------------- */
@@ -270,13 +275,23 @@ function pointInCircle(x, y, cx, cy, r) {
 }
 
 // Resolve a click/tap to exactly one target, using shape priority rather
-// than DOM stacking order.
+// than DOM stacking order. Three tiers:
+//   1. The badge's small "core" — tapping the printed number itself always
+//      opens that block directly, even if a plot polygon technically
+//      reaches under it. This preserves one-tap block access everywhere.
+//   2. Real plot/facility polygons — win over the WIDER touch-enlarged badge
+//      area, so an enlarged badge can never swallow a nearby plot's tap.
+//   3. The full touch-enlarged badge radius — fallback for open space near
+//      the badge that no plot actually covers.
 //
-// Whole-sale blocks are sold as one unit, so tapping ANY of their plots
-// (or their badge) opens that block's own details — not the individual
-// plot. Only the three sale-by-plot blocks keep true plot-level tapping,
-// each plot opening its own details directly. This also means there is
-// no leftover "dead zone": every point on the map resolves to something.
+// A few single-plot commercial blocks (25, 28, 31) have their one plot's
+// centroid sitting almost exactly on the badge center, which made that
+// plot's natural center point unreachable under the default core radius.
+// Rather than changing behavior for all 44 blocks, these three get a much
+// smaller core override — block access still works with a precise tap,
+// while the rest of their (large) plot area opens normally.
+const BADGE_CORE_RADIUS_OVERRIDES = { 25: 2, 28: 2, 31: 2 };
+
 function resolveMapClick(svgX, svgY) {
   // The by-plot blocks' printed number needs to reliably open the block's
   // own details (full plot table) even when the badge center happens to
@@ -291,6 +306,9 @@ function resolveMapClick(svgX, svgY) {
     }
   }
 
+  // Whole-sale blocks are sold as one unit, so tapping ANY of their plots
+  // opens that block's own details — not the individual plot. Only the
+  // three sale-by-plot blocks keep true plot-level tapping.
   for (const [plotId, plot] of Object.entries(plotsData)) {
     if (plot.polygon && pointInPolygon(svgX, svgY, plot.polygon)) {
       const parentBlock = blocksData[plot.block];
@@ -390,13 +408,76 @@ function highlightPlotOnMap(plotId) {
   }
 }
 
+// Traces a block's TRUE outer silhouette from its real plot boundaries —
+// unlike a convex hull, this follows concave/elongated shapes exactly,
+// since it's built from the actual shared/unshared edges between plots,
+// not an approximation.
+function getBlockTrueOutline(blockId) {
+  const block = blocksData[blockId];
+  if (!block || !block.plot_ids) return null;
+
+  const key = (x, y) => `${Math.round(x * 10)},${Math.round(y * 10)}`;
+  const edgeCount = new Map();
+  const edgeList = [];
+
+  block.plot_ids.forEach((pid) => {
+    const plot = plotsData[pid];
+    if (!plot || !plot.polygon) return;
+    const poly = plot.polygon;
+    for (let i = 0; i < poly.length; i++) {
+      const a = poly[i];
+      const b = poly[(i + 1) % poly.length];
+      const k1 = key(a[0], a[1]) + "|" + key(b[0], b[1]);
+      const k2 = key(b[0], b[1]) + "|" + key(a[0], a[1]);
+      const canonical = k1 < k2 ? k1 : k2;
+      if (edgeCount.has(canonical)) {
+        edgeCount.set(canonical, edgeCount.get(canonical) + 1);
+      } else {
+        edgeCount.set(canonical, 1);
+        edgeList.push({ canonical, a, b });
+      }
+    }
+  });
+
+  const boundaryEdges = edgeList.filter((e) => edgeCount.get(e.canonical) === 1);
+  if (boundaryEdges.length < 3) return null;
+
+  const used = new Array(boundaryEdges.length).fill(false);
+  const path = [boundaryEdges[0].a, boundaryEdges[0].b];
+  used[0] = true;
+  let safety = boundaryEdges.length * 2;
+  while (safety-- > 0) {
+    const tail = path[path.length - 1];
+    const tailKey = key(tail[0], tail[1]);
+    let found = false;
+    for (let i = 0; i < boundaryEdges.length; i++) {
+      if (used[i]) continue;
+      const e = boundaryEdges[i];
+      if (key(e.a[0], e.a[1]) === tailKey) {
+        path.push(e.b);
+        used[i] = true;
+        found = true;
+        break;
+      }
+      if (key(e.b[0], e.b[1]) === tailKey) {
+        path.push(e.a);
+        used[i] = true;
+        found = true;
+        break;
+      }
+    }
+    if (!found) break;
+  }
+  return path;
+}
+
 function highlightBlockOnMap(blockId) {
   clearPlotHighlight();
   const block = blocksData[blockId];
-  const hull = getBlockTightHull(blockId);
-  if (!block || !hull) return;
+  const outline = getBlockTrueOutline(blockId) || getBlockTightHull(blockId);
+  if (!block || !outline) return;
   const el = document.createElementNS(SVG_NS, "polygon");
-  el.setAttribute("points", pointsToAttr(hull));
+  el.setAttribute("points", pointsToAttr(outline));
   el.classList.add("block-select-outline");
   if (block.sale_type === "كامل" && block.status === "مباع") {
     el.classList.add("is-sold-selected");
@@ -430,10 +511,9 @@ function buildPlotModalHTML(plotId, plot) {
   const parentBlock = blocksData[plot.block];
   const isInSoldWholeBlock =
     parentBlock && parentBlock.sale_type === "كامل" && parentBlock.status === "مباع";
-  const isByPlotBlock = parentBlock && parentBlock.sale_type === "بالقطعة";
   const isAvailable = plot.status !== "مباعة" && !isInSoldWholeBlock;
 
-  const interestBtn = isAvailable && isByPlotBlock
+  const interestBtn = isAvailable
     ? buildInterestBtn(`مرحباً، أنا مهتم بقطعة رقم ${plot.plot}، بلوك ${plot.block}، مساحة ${formatNumber(plot.area)} م²، من مخطط العليا هيلز.`, "أنا مهتم بهذي القطعة")
     : "";
 
@@ -466,6 +546,14 @@ function buildPlotModalHTML(plotId, plot) {
 }
 
 function buildBlockModalHTML(blockId, block) {
+  const mapsBtn =
+    block.lat != null && block.lng != null
+      ? `<a class="modal-action modal-action-maps" href="https://www.google.com/maps?q=${block.lat},${block.lng}" target="_blank" rel="noopener">
+           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+           فتح الموقع في خرائط جوجل
+         </a>`
+      : "";
+
   const rows = block.plot_ids
     .map((pid) => {
       const p = plotsData[pid];
@@ -519,6 +607,7 @@ function buildBlockModalHTML(blockId, block) {
       </table>
     </div>
     ${!isByPlot && block.status === "متاح" ? buildInterestBtn(`مرحباً، أنا مهتم ببلوك رقم ${blockId} كامل، مساحة ${formatNumber(block.total_area)} م²، من مخطط العليا هيلز.`, "أنا مهتم بهذا البلوك") : ""}
+    ${mapsBtn}
   `;
 }
 
@@ -850,6 +939,57 @@ function renderStatsCounts() {
   const soldPct = totalWholeSale > 0 ? Math.round((c.blocksSold / totalWholeSale) * 100) : 0;
   document.getElementById("stats-progress-fill").style.width = soldPct + "%";
   animateCountUp(document.getElementById("stats-progress-pct"), soldPct, 900, "%");
+}
+
+function renderPermanentStatus() {
+  ensureFocusImagesLoaded();
+  const dimClip = document.getElementById("focus-dim-clip");
+  const boostClip = document.getElementById("focus-boost-clip");
+  dimClip.innerHTML = "";
+  boostClip.innerHTML = "";
+  const dimFrag = document.createDocumentFragment();
+  const boostFrag = document.createDocumentFragment();
+  const outlineFrag = document.createDocumentFragment();
+  const outlineLayer = document.getElementById("status-overlay-layer");
+  outlineLayer.innerHTML = "";
+
+  function addShape(frag, poly) {
+    const el = document.createElementNS(SVG_NS, "polygon");
+    el.setAttribute("points", pointsToAttr(poly));
+    frag.appendChild(el);
+  }
+
+  Object.entries(blocksData).forEach(([blockId, block]) => {
+    if (block.type !== "block") return;
+
+    if (block.sale_type === "كامل") {
+      const target = block.status === "مباع" ? dimFrag : block.status === "متاح" ? boostFrag : null;
+      if (!target) return;
+      block.plot_ids.forEach((pid) => {
+        const plot = plotsData[pid];
+        if (plot && plot.polygon) addShape(target, plot.polygon);
+      });
+    } else if (block.sale_type === "بالقطعة") {
+      const outline = getBlockTrueOutline(blockId) || getBlockTightHull(blockId);
+      if (outline) {
+        const outlineEl = document.createElementNS(SVG_NS, "polygon");
+        outlineEl.setAttribute("points", pointsToAttr(outline));
+        outlineEl.classList.add("by-plot-block-outline");
+        outlineFrag.appendChild(outlineEl);
+      }
+      block.plot_ids.forEach((pid) => {
+        const plot = plotsData[pid];
+        if (!plot || !plot.polygon) return;
+        if (plot.status === "مباعة") addShape(dimFrag, plot.polygon);
+        else if (plot.status === "متاحة") addShape(boostFrag, plot.polygon);
+      });
+    }
+  });
+
+  dimClip.appendChild(dimFrag);
+  boostClip.appendChild(boostFrag);
+  outlineLayer.appendChild(outlineFrag);
+  document.body.classList.add("filters-active");
 }
 
 let focusImagesLoaded = false;
