@@ -741,22 +741,6 @@ body.debug-mode .block-outline-halo {
   pointer-events: none;
 }
 
-/* Small badge attached to the block number itself, marking it as one of
-   the sale-by-plot exceptions — a label on the block, not a frame around
-   it, so it reads as a classification rather than a highlight/selection. */
-.by-plot-badge-pill {
-  fill: #7a4fd6;
-  pointer-events: none;
-}
-
-.by-plot-badge-label {
-  fill: #fff;
-  font-size: 6.6px;
-  font-weight: 700;
-  font-family: inherit;
-  pointer-events: none;
-}
-
 /* ===== Map hint (quiet call-to-action, first-time orientation) ===== */
 .map-hint {
   position: absolute;
@@ -871,29 +855,22 @@ body.debug-mode .block-outline-halo {
   background: #7a4fd6;
 }
 
-.info-progress-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 6px;
-}
-
-.info-progress-label {
-  font-size: 11px;
-  color: var(--text-muted, #7a7a7a);
-  white-space: nowrap;
+.info-progress-inline {
+  gap: 6px;
 }
 
 .info-progress-track {
-  flex: 1 1 auto;
-  max-width: 220px;
+  display: inline-block;
+  width: 60px;
   height: 4px;
   background: #eee;
   border-radius: 999px;
   overflow: hidden;
+  vertical-align: middle;
 }
 
 .info-progress-fill {
+  display: block;
   height: 100%;
   width: 0%;
   background: #9a9a9a;
@@ -901,9 +878,8 @@ body.debug-mode .block-outline-halo {
   transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.info-progress-pct {
-  font-size: 12px;
-  white-space: nowrap;
+.info-row-secondary {
+  margin-top: 4px;
 }
 
 @media (max-width: 600px) {
@@ -915,7 +891,7 @@ body.debug-mode .block-outline-halo {
     gap: 5px 8px;
   }
   .info-progress-track {
-    max-width: 140px;
+    width: 40px;
   }
 }
 
@@ -1135,4 +1111,14 @@ body.filters-active #filter-overlay-layer {
     width: 10px;
     height: 10px;
   }
+}
+
+/* Small notification-style dot marking a block as "sold by plot" —
+   attached directly to its number badge, no text, no frame around the
+   block, minimal footprint so it can never cover any number. */
+.by-plot-badge-dot {
+  fill: #7a4fd6;
+  stroke: #fff;
+  stroke-width: 1;
+  pointer-events: none;
 }

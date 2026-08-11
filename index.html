@@ -55,20 +55,21 @@
   <div class="info-bar" id="info-bar">
     <span class="info-title">حالة المخطط</span>
     <div class="info-row">
+      <span class="info-item"><span class="info-dot dot-sold"></span><b id="count-blocks-sold">0</b> بلوك مباع</span>
+      <span class="info-sep"></span>
       <span class="info-item"><span class="info-dot dot-available"></span><b id="count-residential-available">0</b> بلوك سكني متاح</span>
       <span class="info-sep"></span>
       <span class="info-item"><span class="info-dot dot-available"></span><b id="count-commercial-available">0</b> بلوكات تجارية متاحة</span>
       <span class="info-sep"></span>
-      <span class="info-item"><span class="info-dot dot-sold"></span><b id="count-blocks-sold">0</b> بلوك مباع</span>
+      <span class="info-item info-progress-inline">
+        نسبة المبيع <b id="stats-progress-pct">0%</b>
+        <span class="info-progress-track"><span class="info-progress-fill" id="stats-progress-fill"></span></span>
+      </span>
       <span class="info-sep"></span>
       <span class="info-item"><span class="info-dot dot-by-plot"></span><b id="count-plots-available">0</b> قطعة متاحة للبيع بالقطعة</span>
     </div>
-    <div class="info-progress-row">
-      <span class="info-progress-label">نسبة البيع</span>
-      <div class="info-progress-track">
-        <div class="info-progress-fill" id="stats-progress-fill"></div>
-      </div>
-      <span class="info-progress-pct"><b id="stats-progress-pct">0%</b></span>
+    <div class="info-row info-row-secondary">
+      <span class="info-item"><span class="info-dot dot-by-plot"></span>بلوكات البيع بالقطعة: 4، 9، 16</span>
     </div>
   </div>
 

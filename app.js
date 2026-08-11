@@ -986,110 +986,47 @@ function renderPermanentStatus() {
     } else if (block.sale_type === "بالقطعة") {
       if (block.centroid) {
         const realRadius = block.badge_radius || BADGE_RADIUS;
-        const pillW = 26;
-        const pillH = 9.5;
+        const dotRadius = 3.2;
+        const dist = realRadius + dotRadius + 1.5; // just outside the badge's own edge
 
-        // Try several positions around the badge (below, above, right,
-        // left, then the diagonals) at increasing distance, and use the
-        // first one whose footprint doesn't land on top of any real plot
-        // — so the "تفريد" label can never cover a plot number. Every
-        // candidate is also required to fall within the block's own real
-        // outline, so the badge never ends up sitting out on the street.
+        // A small notification-style dot attached directly to the badge
+        // circle — top-right first (the conventional "badge indicator"
+        // position), falling back to other corners only if that exact
+        // spot happens to land on a plot polygon.
+        const preferredAngles = [-45, 45, -135, 135, 0, 90, 180, 270].map((deg) => (deg * Math.PI) / 180);
         const blockOutline = getBlockTrueOutline(blockId);
-        const candidates = [];
-        // Preferred directions in priority order (right, below, left,
-        // above, then the four diagonals) — tried at increasing distance —
-        // so the badge lands in the same relative spot across all three
-        // blocks whenever the layout allows it, instead of an arbitrary
-        // angle that happened to be free.
-        const preferredAngles = [0, 90, 180, 270, 45, 135, 225, 315].map((deg) => (deg * Math.PI) / 180);
-        for (const dist of [realRadius + 4, realRadius + 8, realRadius + 14, realRadius + 22, realRadius + 32, realRadius + 44]) {
-          for (const angle of preferredAngles) {
-            const cx = block.centroid[0] + Math.cos(angle) * dist;
-            const cy = block.centroid[1] + Math.sin(angle) * dist;
-            if (blockOutline && !pointInPolygon(cx, cy, blockOutline)) continue;
-            candidates.push([cx, cy]);
-          }
-        }
-        if (candidates.length === 0) {
-          candidates.push([block.centroid[0], block.centroid[1] + realRadius + 5]);
-        }
 
-        function nearestPlotCenterDist(cx, cy) {
-          let best = Infinity;
+        function dotOverlapsAnyPlot(cx, cy) {
+          if (blockOutline && !pointInPolygon(cx, cy, blockOutline)) return true;
           for (const plot of Object.values(plotsData)) {
             if (!plot.polygon) continue;
-            const pc = plot.polygon.reduce((s, p) => [s[0] + p[0], s[1] + p[1]], [0, 0]);
-            const centerX = pc[0] / plot.polygon.length,
-              centerY = pc[1] / plot.polygon.length;
-            const d = Math.hypot(cx - centerX, cy - centerY);
-            if (d < best) best = d;
-          }
-          return best;
-        }
-
-        function pillOverlapsAnyPlot(cx, cy) {
-          const margin = 2;
-          const x0 = cx - pillW / 2 - margin,
-            x1 = cx + pillW / 2 + margin,
-            y0 = cy - pillH / 2 - margin,
-            y1 = cy + pillH / 2 + margin;
-          const samples = [];
-          const steps = 6;
-          for (let i = 0; i <= steps; i++) {
-            const t = i / steps;
-            samples.push([x0 + (x1 - x0) * t, y0]);
-            samples.push([x0 + (x1 - x0) * t, y1]);
-            samples.push([x0, y0 + (y1 - y0) * t]);
-            samples.push([x1, y0 + (y1 - y0) * t]);
-          }
-          samples.push([cx, cy]);
-
-          const MIN_DIST_FROM_PLOT_CENTER = 22; // keeps clear of any plot's printed number
-          if (nearestPlotCenterDist(cx, cy) < MIN_DIST_FROM_PLOT_CENTER) return true;
-          for (const plot of Object.values(plotsData)) {
-            if (!plot.polygon) continue;
-            for (const [px, py] of samples) {
-              if (pointInPolygon(px, py, plot.polygon)) return true;
-            }
+            if (pointInPolygon(cx, cy, plot.polygon)) return true;
           }
           return false;
         }
 
-        let chosen = candidates.find(([cx, cy]) => !pillOverlapsAnyPlot(cx, cy));
-        if (!chosen) {
-          // Best-effort fallback: pick whichever candidate is farthest from
-          // any plot's printed number, even if it doesn't fully clear the
-          // ideal safety margin.
-          let bestScore = -1;
-          for (const c of candidates) {
-            const score = nearestPlotCenterDist(c[0], c[1]);
-            if (score > bestScore) {
-              bestScore = score;
-              chosen = c;
-            }
+        let chosen = null;
+        for (const angle of preferredAngles) {
+          const cx = block.centroid[0] + Math.cos(angle) * dist;
+          const cy = block.centroid[1] + Math.sin(angle) * dist;
+          if (!dotOverlapsAnyPlot(cx, cy)) {
+            chosen = [cx, cy];
+            break;
           }
+        }
+        if (!chosen) {
+          // Fallback: top-right regardless — still just outside the badge,
+          // never covering the number itself.
+          chosen = [block.centroid[0] + Math.cos(-Math.PI / 4) * dist, block.centroid[1] + Math.sin(-Math.PI / 4) * dist];
         }
 
         const [cx, cy] = chosen;
-
-        const pill = document.createElementNS(SVG_NS, "rect");
-        pill.setAttribute("x", cx - pillW / 2);
-        pill.setAttribute("y", cy - pillH / 2);
-        pill.setAttribute("width", pillW);
-        pill.setAttribute("height", pillH);
-        pill.setAttribute("rx", pillH / 2);
-        pill.classList.add("by-plot-badge-pill");
-        outlineFrag.appendChild(pill);
-
-        const label = document.createElementNS(SVG_NS, "text");
-        label.setAttribute("x", cx);
-        label.setAttribute("y", cy);
-        label.setAttribute("text-anchor", "middle");
-        label.setAttribute("dominant-baseline", "central");
-        label.classList.add("by-plot-badge-label");
-        label.textContent = "تفريد";
-        outlineFrag.appendChild(label);
+        const dot = document.createElementNS(SVG_NS, "circle");
+        dot.setAttribute("cx", cx);
+        dot.setAttribute("cy", cy);
+        dot.setAttribute("r", dotRadius);
+        dot.classList.add("by-plot-badge-dot");
+        outlineFrag.appendChild(dot);
       }
       block.plot_ids.forEach((pid) => {
         const plot = plotsData[pid];
