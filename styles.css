@@ -730,30 +730,19 @@ body.debug-mode .block-outline-halo {
   pointer-events: none;
 }
 
-/* Whole-block outline marking a "sold by plot" block — traces the real
-   outer silhouette, made deliberately bold so the distinction is obvious
-   from a glance at the whole map, not just when zoomed into the badge. */
-.by-plot-block-outline {
-  fill: none;
-  stroke: #7a4fd6;
-  stroke-width: 3.2;
-  stroke-linejoin: round;
+/* Small badge attached to the block number itself, marking it as one of
+   the sale-by-plot exceptions — a label on the block, not a frame around
+   it, so it reads as a classification rather than a highlight/selection. */
+.by-plot-badge-pill {
+  fill: #7a4fd6;
   pointer-events: none;
 }
 
-.by-plot-block-outline-glow {
-  fill: none;
-  stroke: #7a4fd6;
-  stroke-width: 7;
-  stroke-linejoin: round;
-  opacity: 0.18;
-  pointer-events: none;
-}
-
-.by-plot-badge-ring {
-  fill: none;
-  stroke: #7a4fd6;
-  stroke-width: 1.8;
+.by-plot-badge-label {
+  fill: #fff;
+  font-size: 6.6px;
+  font-weight: 700;
+  font-family: inherit;
   pointer-events: none;
 }
 
@@ -810,115 +799,57 @@ body.debug-mode .block-outline-halo {
   margin-bottom: 10px;
 }
 
-/* ===== Stats bar (top of page) ===== */
+/* ===== Info bar (plain status text, NOT clickable, NOT a card/button) ===== */
 
-.stats-bar {
+.info-bar {
   max-width: 1400px;
-  margin: 0 auto 10px;
-  padding: 0 12px;
+  margin: 0 auto 6px;
+  padding: 6px 14px;
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 12.5px;
+  color: var(--text-dark, #333);
 }
 
-.stats-card {
-  flex: 1 1 120px;
+.info-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: #fff;
-  border: 1px solid var(--border-light, #e2e2e2);
-  border-radius: 9px;
-  padding: 6px 10px;
+  gap: 5px;
+  white-space: nowrap;
 }
 
-.stats-card.stats-card-combined {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  text-align: center;
-}
-
-.stats-combined-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-}
-
-.stats-combined-sep {
-  width: 1px;
-  height: 14px;
-  background: var(--border-light, #e2e2e2);
-  margin: 0 2px;
-}
-
-.stats-combined-label {
-  font-size: 10px;
-  color: var(--text-muted, #8a8a8a);
-  text-align: center;
-}
-
-.stats-progress-track {
-  width: 100%;
-  height: 5px;
-  background: #eef2ef;
-  border-radius: 999px;
-  overflow: hidden;
-  margin-top: 2px;
-}
-
-.stats-progress-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #dc4a41, #e5665c);
-  border-radius: 999px;
-  transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.stats-progress-label {
-  font-size: 10px;
-  color: var(--text-muted, #8a8a8a);
-}
-
-.stats-progress-label b {
-  color: #dc4a41;
+.info-item b {
   font-weight: 700;
 }
 
-.stats-dot {
-  width: 9px;
-  height: 9px;
+.info-sep {
+  width: 1px;
+  height: 12px;
+  background: var(--border-light, #ddd);
+}
+
+.info-dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
-.stats-dot.dot-available {
+.info-dot.dot-available {
   background: #2f8f5b;
 }
 
-.stats-dot.dot-sold {
+.info-dot.dot-sold {
   background: #9a9a9a;
 }
 
-.stats-text {
-  font-size: 13px;
-  color: var(--text-dark, #1c1c1c);
-  white-space: nowrap;
-}
-
-.stats-text b {
-  font-weight: 700;
-}
-
 @media (max-width: 600px) {
-  .stats-card {
-    flex: 1 1 45%;
-    padding: 8px 10px;
-  }
-  .stats-text {
-    font-size: 12px;
+  .info-bar {
+    font-size: 11px;
+    padding: 6px 10px;
+    gap: 5px 8px;
   }
 }
 

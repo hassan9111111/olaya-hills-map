@@ -52,31 +52,18 @@
     })();
   </script>
 
-  <div class="stats-bar" id="stats-bar">
-    <div class="stats-card stats-card-combined" id="stat-blocks-available">
-      <div class="stats-combined-row">
-        <span class="stats-dot dot-sold"></span>
-        <span class="stats-text"><b id="count-blocks-sold">0</b> مباع</span>
-        <span class="stats-combined-sep"></span>
-        <span class="stats-dot dot-available"></span>
-        <span class="stats-text"><b id="count-blocks-available">0</b> متاح</span>
-      </div>
-      <span class="stats-combined-label">حالة البلوكات</span>
-      <div class="stats-progress-track">
-        <div class="stats-progress-fill" id="stats-progress-fill"></div>
-      </div>
-      <span class="stats-progress-label"><b id="stats-progress-pct">0%</b> نسبة المباع</span>
-    </div>
-    <div class="stats-card" id="stat-plots-available">
-      <span class="stats-dot dot-available"></span>
-      <span class="stats-text">قطع متاحة (بيع بالقطعة): <b id="count-plots-available">0</b></span>
-    </div>
+  <div class="info-bar" id="info-bar">
+    <span class="info-item"><span class="info-dot dot-sold"></span>مباع <b id="count-blocks-sold">0</b></span>
+    <span class="info-sep"></span>
+    <span class="info-item"><span class="info-dot dot-available"></span>متاح <b id="count-blocks-available">0</b></span>
+    <span class="info-sep"></span>
+    <span class="info-item">نسبة المبيع <b id="stats-progress-pct">0%</b></span>
+    <span class="info-sep"></span>
+    <span class="info-item"><b id="count-plots-available">0</b> قطعة متاحة للبيع بالقطعة</span>
   </div>
 
   <div class="map-legend-bar" id="map-legend-bar">
-    <span class="legend-item"><span class="legend-swatch legend-swatch-dim"></span>رمادي = مباع</span>
-    <span class="legend-item"><span class="legend-swatch legend-swatch-vivid"></span>أزرق فاتح = متاح</span>
-    <span class="legend-item"><span class="legend-swatch legend-swatch-dashed"></span>يُباع بالقطعة (4، 9، 16) — الباقي يُباع بلوكات كاملة</span>
+    <span class="legend-item"><span class="legend-swatch legend-swatch-dim"></span>مباع (رمادي) — الباقي متاح بلونه الطبيعي</span>
   </div>
 
   <div class="search-bar" id="search-bar">

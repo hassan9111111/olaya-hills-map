@@ -937,7 +937,6 @@ function renderStatsCounts() {
 
   const totalWholeSale = c.blocksAvailable + c.blocksSold;
   const soldPct = totalWholeSale > 0 ? Math.round((c.blocksSold / totalWholeSale) * 100) : 0;
-  document.getElementById("stats-progress-fill").style.width = soldPct + "%";
   animateCountUp(document.getElementById("stats-progress-pct"), soldPct, 900, "%");
 }
 
@@ -970,20 +969,30 @@ function renderPermanentStatus() {
         if (plot && plot.polygon) addShape(target, plot.polygon);
       });
     } else if (block.sale_type === "بالقطعة") {
-      const outline = getBlockTrueOutline(blockId) || getBlockTightHull(blockId);
-      if (outline) {
-        const outlineEl = document.createElementNS(SVG_NS, "polygon");
-        outlineEl.setAttribute("points", pointsToAttr(outline));
-        outlineEl.classList.add("by-plot-block-outline");
-        outlineFrag.appendChild(outlineEl);
-      }
       if (block.centroid) {
-        const ring = document.createElementNS(SVG_NS, "circle");
-        ring.setAttribute("cx", block.centroid[0]);
-        ring.setAttribute("cy", block.centroid[1]);
-        ring.setAttribute("r", (block.badge_radius || BADGE_RADIUS) + 3);
-        ring.classList.add("by-plot-badge-ring");
-        outlineFrag.appendChild(ring);
+        const realRadius = block.badge_radius || BADGE_RADIUS;
+        const cx = block.centroid[0];
+        const cy = block.centroid[1] + realRadius + 4;
+        const pillW = 30;
+        const pillH = 10.5;
+
+        const pill = document.createElementNS(SVG_NS, "rect");
+        pill.setAttribute("x", cx - pillW / 2);
+        pill.setAttribute("y", cy);
+        pill.setAttribute("width", pillW);
+        pill.setAttribute("height", pillH);
+        pill.setAttribute("rx", pillH / 2);
+        pill.classList.add("by-plot-badge-pill");
+        outlineFrag.appendChild(pill);
+
+        const label = document.createElementNS(SVG_NS, "text");
+        label.setAttribute("x", cx);
+        label.setAttribute("y", cy + pillH / 2);
+        label.setAttribute("text-anchor", "middle");
+        label.setAttribute("dominant-baseline", "central");
+        label.classList.add("by-plot-badge-label");
+        label.textContent = "تفريد";
+        outlineFrag.appendChild(label);
       }
       block.plot_ids.forEach((pid) => {
         const plot = plotsData[pid];
