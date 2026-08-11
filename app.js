@@ -977,6 +977,14 @@ function renderPermanentStatus() {
         outlineEl.classList.add("by-plot-block-outline");
         outlineFrag.appendChild(outlineEl);
       }
+      if (block.centroid) {
+        const ring = document.createElementNS(SVG_NS, "circle");
+        ring.setAttribute("cx", block.centroid[0]);
+        ring.setAttribute("cy", block.centroid[1]);
+        ring.setAttribute("r", (block.badge_radius || BADGE_RADIUS) + 3);
+        ring.classList.add("by-plot-badge-ring");
+        outlineFrag.appendChild(ring);
+      }
       block.plot_ids.forEach((pid) => {
         const plot = plotsData[pid];
         if (!plot || !plot.polygon) return;

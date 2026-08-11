@@ -730,15 +730,30 @@ body.debug-mode .block-outline-halo {
   pointer-events: none;
 }
 
-/* Whole-block dashed outline marking a "sold by plot" block — traces the
-   real outer silhouette (same tight hull used for the sold-block stroke),
-   so the distinction reads at the block level, not just at its badge. */
+/* Whole-block outline marking a "sold by plot" block — traces the real
+   outer silhouette, made deliberately bold so the distinction is obvious
+   from a glance at the whole map, not just when zoomed into the badge. */
 .by-plot-block-outline {
   fill: none;
-  stroke: #5b6fa8;
+  stroke: #7a4fd6;
+  stroke-width: 3.2;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.by-plot-block-outline-glow {
+  fill: none;
+  stroke: #7a4fd6;
+  stroke-width: 7;
+  stroke-linejoin: round;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.by-plot-badge-ring {
+  fill: none;
+  stroke: #7a4fd6;
   stroke-width: 1.8;
-  stroke-dasharray: 5 3;
-  opacity: 0.75;
   pointer-events: none;
 }
 
@@ -1099,11 +1114,11 @@ body.filters-active #filter-overlay-layer {
 }
 
 .legend-swatch-dim {
-  background: #b9bcb9;
+  background: #9a9a9a;
 }
 
 .legend-swatch-vivid {
-  background: linear-gradient(135deg, #2f8f5b, #7fb3ab);
+  background: #4a90d9;
 }
 
 .legend-swatch-dashed {
