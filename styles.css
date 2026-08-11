@@ -141,6 +141,17 @@ body {
   margin-bottom: 14px;
 }
 
+.info-note {
+  background: #f0f1f3;
+  color: #4a4f57;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-top: 12px;
+  line-height: 1.5;
+}
+
 .sold-banner .dot {
   width: 9px;
   height: 9px;
@@ -854,6 +865,10 @@ body.debug-mode .block-outline-halo {
 
 .info-dot.dot-sold {
   background: #9a9a9a;
+}
+
+.info-dot.dot-by-plot {
+  background: #7a4fd6;
 }
 
 .info-progress-row {

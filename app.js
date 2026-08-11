@@ -509,13 +509,16 @@ function buildPlotModalHTML(plotId, plot) {
       : "";
 
   const parentBlock = blocksData[plot.block];
+  const isByPlotBlock = parentBlock && parentBlock.sale_type === "بالقطعة";
   const isInSoldWholeBlock =
     parentBlock && parentBlock.sale_type === "كامل" && parentBlock.status === "مباع";
-  const isAvailable = plot.status !== "مباعة" && !isInSoldWholeBlock;
+  const isInAvailableWholeBlock =
+    parentBlock && parentBlock.sale_type === "كامل" && parentBlock.status === "متاح";
 
-  const interestBtn = isAvailable
-    ? buildInterestBtn(`مرحباً، أنا مهتم بقطعة رقم ${plot.plot}، بلوك ${plot.block}، مساحة ${formatNumber(plot.area)} م²، من مخطط العليا هيلز.`, "أنا مهتم بهذي القطعة")
-    : "";
+  const interestBtn =
+    isByPlotBlock && plot.status === "متاحة"
+      ? buildInterestBtn(`مرحباً، أنا مهتم بقطعة رقم ${plot.plot}، بلوك ${plot.block}، مساحة ${formatNumber(plot.area)} م²، من مخطط العليا هيلز.`, "أنا مهتم بهذي القطعة")
+      : "";
 
   const soldBanner =
     plot.status === "مباعة"
@@ -523,6 +526,10 @@ function buildPlotModalHTML(plotId, plot) {
       : isInSoldWholeBlock
         ? `<div class="sold-banner"><span class="dot"></span>هذه القطعة ضمن بلوك مباع بالكامل</div>`
         : "";
+
+  const notIndividualNote = isInAvailableWholeBlock
+    ? `<div class="info-note">هذه القطعة ضمن بلوك يُباع بالكامل ولا تُباع بشكل منفرد.</div>`
+    : "";
 
   return `
     ${soldBanner}
@@ -536,6 +543,7 @@ function buildPlotModalHTML(plotId, plot) {
         <p class="modal-stat-value modal-stat-value-lg">${formatNumber(plot.area)} م²</p>
       </div>
     </div>
+    ${notIndividualNote}
 
     <button class="modal-action" id="view-block-btn" data-block-id="${plot.block}">
       عرض تفاصيل البلوك
@@ -984,17 +992,24 @@ function renderPermanentStatus() {
         // Try several positions around the badge (below, above, right,
         // left, then the diagonals) at increasing distance, and use the
         // first one whose footprint doesn't land on top of any real plot
-        // — so the "تفريد" label can never cover a plot number.
+        // — so the "تفريد" label can never cover a plot number. Every
+        // candidate is also required to fall within the block's own real
+        // outline, so the badge never ends up sitting out on the street.
+        const blockOutline = getBlockTrueOutline(blockId);
         const candidates = [];
-        const angleSteps = 12;
+        const angleSteps = 16;
         for (const dist of [realRadius + 5, realRadius + 12, realRadius + 20, realRadius + 30, realRadius + 42]) {
           for (let i = 0; i < angleSteps; i++) {
             const angle = (i / angleSteps) * Math.PI * 2;
-            candidates.push([
-              block.centroid[0] + Math.cos(angle) * dist,
-              block.centroid[1] + Math.sin(angle) * dist,
-            ]);
+            const cx = block.centroid[0] + Math.cos(angle) * dist;
+            const cy = block.centroid[1] + Math.sin(angle) * dist;
+            if (blockOutline && !pointInPolygon(cx, cy, blockOutline)) continue;
+            candidates.push([cx, cy]);
           }
+        }
+        if (candidates.length === 0) {
+          // Extremely thin/small block — fall back to right below the badge
+          candidates.push([block.centroid[0], block.centroid[1] + realRadius + 5]);
         }
 
         function nearestPlotCenterDist(cx, cy) {
