@@ -32,7 +32,7 @@ const BADGE_RADIUS = 6; // pt, small enough to avoid covering nearby plot center
 // link always reaches the rep who actually sent it. No key present ->
 // falls back to the manager.
 const SALES_REPS = {
-  abdulrahman: { name: "عبدالرحمن", phone: "966555585852" },
+  abdulrahman: { name: "عبدالرحمن", phone: "966558075216" },
   ali: { name: "علي", phone: "966550017243" },
   hassan: { name: "حسن", phone: "966504669338" },
 };
@@ -181,6 +181,161 @@ function convexHull(points) {
 // directly from its own real, click-verified plot boundaries) instead.
 // Cached per block since it never changes at runtime.
 const blockTightHullCache = {};
+// Traces a block's true outer silhouette by actually RASTERIZING every one
+// of its plots onto a pixel grid (filled) and walking the resulting shape's
+// contour — the same principle image-editing tools use for "select by
+// color" outlines. This is immune to the vertex-matching edge cases that
+// break pure vector boundary-tracing (e.g. a plot that only touches its
+// neighbors at single points rather than full shared edges), because it
+// never needs edges to match at all — it only cares whether a pixel is
+// inside the union or not.
+function getBlockRasterOutline(blockId) {
+  const block = blocksData[blockId];
+  if (!block || !block.plot_ids) return null;
+
+  const SCALE = 4; // px per map unit — enough precision, still fast
+  const MARGIN = 6;
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
+  const polys = [];
+  block.plot_ids.forEach((pid) => {
+    const plot = plotsData[pid];
+    if (!plot || !plot.polygon) return;
+    polys.push(plot.polygon);
+    plot.polygon.forEach(([x, y]) => {
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    });
+  });
+  if (polys.length === 0) return null;
+  minX -= MARGIN;
+  minY -= MARGIN;
+  maxX += MARGIN;
+  maxY += MARGIN;
+
+  const w = Math.ceil((maxX - minX) * SCALE);
+  const h = Math.ceil((maxY - minY) * SCALE);
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#fff";
+  polys.forEach((poly) => {
+    ctx.beginPath();
+    poly.forEach(([x, y], i) => {
+      const px = (x - minX) * SCALE;
+      const py = (y - minY) * SCALE;
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    });
+    ctx.closePath();
+    ctx.fill();
+  });
+
+  const imgData = ctx.getImageData(0, 0, w, h).data;
+  const isFilled = (x, y) => {
+    if (x < 0 || y < 0 || x >= w || y >= h) return false;
+    return imgData[(y * w + x) * 4 + 3] > 128;
+  };
+
+  // Find a guaranteed boundary starting pixel: leftmost pixel of the
+  // topmost filled row.
+  let startX = -1,
+    startY = -1;
+  outer: for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (isFilled(x, y)) {
+        startX = x;
+        startY = y;
+        break outer;
+      }
+    }
+  }
+  if (startX === -1) return null;
+
+  // Moore-neighbor boundary tracing (8-connected).
+  const dirs = [
+    [1, 0],
+    [1, 1],
+    [0, 1],
+    [-1, 1],
+    [-1, 0],
+    [-1, -1],
+    [0, -1],
+    [1, -1],
+  ];
+  const contour = [];
+  let cx = startX,
+    cy = startY;
+  let backtrackDir = 6; // came from "north" conceptually, matches first-pixel-found scan
+  let safety = w * h * 4;
+  do {
+    contour.push([cx, cy]);
+    let dir = (backtrackDir + 6) % 8; // start search from one step counter-clockwise of entry
+    let found = false;
+    for (let i = 0; i < 8; i++) {
+      const d = dirs[(dir + i) % 8];
+      const nx = cx + d[0],
+        ny = cy + d[1];
+      if (isFilled(nx, ny)) {
+        backtrackDir = (dir + i) % 8;
+        cx = nx;
+        cy = ny;
+        found = true;
+        break;
+      }
+    }
+    if (!found) break;
+    safety--;
+  } while ((cx !== startX || cy !== startY) && safety > 0);
+
+  if (contour.length < 3) return null;
+
+  // Simplify with a basic Douglas-Peucker pass so the SVG polygon isn't
+  // thousands of single-pixel-step points.
+  function perpDist(pt, a, b) {
+    const [x, y] = pt,
+      [x1, y1] = a,
+      [x2, y2] = b;
+    const dx = x2 - x1,
+      dy = y2 - y1;
+    const len2 = dx * dx + dy * dy;
+    if (len2 === 0) return Math.hypot(x - x1, y - y1);
+    const t = ((x - x1) * dx + (y - y1) * dy) / len2;
+    const px = x1 + t * dx,
+      py = y1 + t * dy;
+    return Math.hypot(x - px, y - py);
+  }
+  function simplify(points, epsilon) {
+    if (points.length < 3) return points;
+    let maxDist = 0,
+      idx = 0;
+    for (let i = 1; i < points.length - 1; i++) {
+      const d = perpDist(points[i], points[0], points[points.length - 1]);
+      if (d > maxDist) {
+        maxDist = d;
+        idx = i;
+      }
+    }
+    if (maxDist > epsilon) {
+      const left = simplify(points.slice(0, idx + 1), epsilon);
+      const right = simplify(points.slice(idx), epsilon);
+      return left.slice(0, -1).concat(right);
+    }
+    return [points[0], points[points.length - 1]];
+  }
+  const simplified = simplify(contour, SCALE * 1.5);
+
+  return simplified.map(([px, py]) => [
+    Math.round((px / SCALE + minX) * 10) / 10,
+    Math.round((py / SCALE + minY) * 10) / 10,
+  ]);
+}
+
 function getBlockTightHull(blockId) {
   if (blockTightHullCache[blockId]) return blockTightHullCache[blockId];
   const block = blocksData[blockId];
@@ -416,7 +571,7 @@ function getBlockTrueOutline(blockId) {
   const block = blocksData[blockId];
   if (!block || !block.plot_ids) return null;
 
-  const key = (x, y) => `${Math.round(x * 10)},${Math.round(y * 10)}`;
+  const key = (x, y) => `${Math.round(x * 2)},${Math.round(y * 2)}`;
   const edgeCount = new Map();
   const edgeList = [];
 
@@ -442,39 +597,77 @@ function getBlockTrueOutline(blockId) {
   const boundaryEdges = edgeList.filter((e) => edgeCount.get(e.canonical) === 1);
   if (boundaryEdges.length < 3) return null;
 
+  const TOLERANCE = 3; // units — bridges small numeric gaps between adjacent plots
   const used = new Array(boundaryEdges.length).fill(false);
-  const path = [boundaryEdges[0].a, boundaryEdges[0].b];
-  used[0] = true;
-  let safety = boundaryEdges.length * 2;
-  while (safety-- > 0) {
-    const tail = path[path.length - 1];
-    const tailKey = key(tail[0], tail[1]);
-    let found = false;
-    for (let i = 0; i < boundaryEdges.length; i++) {
-      if (used[i]) continue;
-      const e = boundaryEdges[i];
-      if (key(e.a[0], e.a[1]) === tailKey) {
-        path.push(e.b);
-        used[i] = true;
-        found = true;
-        break;
+
+  function traceLoopFrom(startIdx) {
+    const loop = [boundaryEdges[startIdx].a, boundaryEdges[startIdx].b];
+    used[startIdx] = true;
+    let safety = boundaryEdges.length * 2;
+    while (safety-- > 0) {
+      const tail = loop[loop.length - 1];
+      let bestDist = TOLERANCE,
+        bestIdx = -1,
+        bestPoint = null;
+      for (let i = 0; i < boundaryEdges.length; i++) {
+        if (used[i]) continue;
+        const e = boundaryEdges[i];
+        const dA = Math.hypot(e.a[0] - tail[0], e.a[1] - tail[1]);
+        const dB = Math.hypot(e.b[0] - tail[0], e.b[1] - tail[1]);
+        if (dA < bestDist) {
+          bestDist = dA;
+          bestIdx = i;
+          bestPoint = e.b;
+        }
+        if (dB < bestDist) {
+          bestDist = dB;
+          bestIdx = i;
+          bestPoint = e.a;
+        }
       }
-      if (key(e.b[0], e.b[1]) === tailKey) {
-        path.push(e.a);
-        used[i] = true;
-        found = true;
-        break;
-      }
+      if (bestIdx === -1) break;
+      loop.push(bestPoint);
+      used[bestIdx] = true;
     }
-    if (!found) break;
+    return loop;
   }
+
+  function loopArea(loop) {
+    let sum = 0;
+    for (let i = 0; i < loop.length; i++) {
+      const [x1, y1] = loop[i];
+      const [x2, y2] = loop[(i + 1) % loop.length];
+      sum += x1 * y2 - x2 * y1;
+    }
+    return Math.abs(sum) / 2;
+  }
+
+  // A block's plots aren't always fully edge-connected to every neighbor
+  // (a real geometry gap around one plot is possible) — that splits the
+  // boundary into more than one closed loop. Trace every loop and use
+  // whichever encloses the most area as the block's true main silhouette,
+  // rather than the first (possibly small/wrong) one found.
+  const loops = [];
+  for (let i = 0; i < boundaryEdges.length; i++) {
+    if (used[i]) continue;
+    loops.push(traceLoopFrom(i));
+  }
+  if (loops.length === 0) return null;
+  const path = loops.reduce((best, l) => (loopArea(l) > loopArea(best) ? l : best));
+
+  // A genuinely closed loop must connect back to its own starting point —
+  // otherwise this is an open chain that happened to stop extending, and
+  // drawing it as a polygon would auto-close with an incorrect straight
+  // line across the block. Reject and let the caller fall back to the hull.
+  const closureGap = Math.hypot(path[0][0] - path[path.length - 1][0], path[0][1] - path[path.length - 1][1]);
+  if (closureGap > TOLERANCE) return null;
   return path;
 }
 
 function highlightBlockOnMap(blockId) {
   clearPlotHighlight();
   const block = blocksData[blockId];
-  const outline = getBlockTrueOutline(blockId) || getBlockTightHull(blockId);
+  const outline = getBlockRasterOutline(blockId) || getBlockTrueOutline(blockId) || getBlockTightHull(blockId);
   if (!block || !outline) return;
   const el = document.createElementNS(SVG_NS, "polygon");
   el.setAttribute("points", pointsToAttr(outline));
@@ -964,6 +1157,7 @@ function renderPermanentStatus() {
   const dimFrag = document.createDocumentFragment();
   const boostFrag = document.createDocumentFragment();
   const outlineFrag = document.createDocumentFragment();
+  const badgeRingFrag = document.createDocumentFragment();
   const outlineLayer = document.getElementById("status-overlay-layer");
   outlineLayer.innerHTML = "";
 
@@ -986,19 +1180,17 @@ function renderPermanentStatus() {
     } else if (block.sale_type === "بالقطعة") {
       if (block.centroid) {
         const realRadius = block.badge_radius || BADGE_RADIUS;
-        const dotRadius = 3.0;
-        // Positioned INSIDE the badge circle itself, to the right of the
-        // block number — a classification mark fused into the badge, not
-        // a separate element floating over the map.
-        const cx = block.centroid[0] + realRadius * 0.34;
-        const cy = block.centroid[1];
-
+        // A small purple dot INSIDE the original badge circle, just to the
+        // right of the block number — the circle and number stay 100%
+        // untouched, this just adds a small classification mark fused
+        // into the badge itself. Sized and positioned with a verified
+        // safety margin so it never reaches the circle's true edge.
         const dot = document.createElementNS(SVG_NS, "circle");
-        dot.setAttribute("cx", cx);
-        dot.setAttribute("cy", cy);
-        dot.setAttribute("r", dotRadius);
+        dot.setAttribute("cx", block.centroid[0] + realRadius * 0.34);
+        dot.setAttribute("cy", block.centroid[1]);
+        dot.setAttribute("r", 3.0);
         dot.classList.add("by-plot-badge-dot");
-        outlineFrag.appendChild(dot);
+        badgeRingFrag.appendChild(dot);
       }
       block.plot_ids.forEach((pid) => {
         const plot = plotsData[pid];
@@ -1012,6 +1204,9 @@ function renderPermanentStatus() {
   dimClip.appendChild(dimFrag);
   boostClip.appendChild(boostFrag);
   outlineLayer.appendChild(outlineFrag);
+  const ringLayer = document.getElementById("badge-ring-layer");
+  ringLayer.innerHTML = "";
+  ringLayer.appendChild(badgeRingFrag);
   document.body.classList.add("filters-active");
 }
 

@@ -69,7 +69,10 @@
       <span class="info-item"><span class="info-dot dot-by-plot"></span><b id="count-plots-available">0</b> قطعة متاحة للبيع بالقطعة</span>
     </div>
     <div class="info-row info-row-secondary">
-      <span class="info-item"><span class="info-dot dot-by-plot"></span>بلوكات البيع بالقطعة: 4، 9، 16</span>
+      <span class="by-plot-highlight">
+        <span class="info-dot dot-by-plot"></span>
+        بلوكات البيع بالقطعة: بلوك <b>4</b>، بلوك <b>5</b>، بلوك <b>9</b>، بلوك <b>16</b>
+      </span>
     </div>
   </div>
 
@@ -138,6 +141,16 @@
       <g id="plots-layer"></g>
       <g id="status-overlay-layer"></g>
       <g id="filter-overlay-layer"></g>
+      <!-- A small circular patch of the PURE, untouched base image at each
+           by-plot block's badge position — sits above the dim/boost
+           layers, so a nearby sold/available plot's shading can never
+           bleed onto the block number itself. -->
+      <!-- Purple "by-plot block" rings — deliberately the LAST thing drawn
+           before the (invisible) click-target badges layer, so they always
+           render above every dim/boost status layer, regardless of a
+           plot's sold/available state — no protective patch needed, pure
+           draw order handles it. -->
+      <g id="badge-ring-layer"></g>
       <g id="badges-layer"></g>
     </svg>
   </div>
