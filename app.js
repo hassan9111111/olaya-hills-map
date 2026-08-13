@@ -683,10 +683,11 @@ function formatNumber(n) {
   return Math.round(n).toLocaleString("en-US");
 }
 
-function buildInterestBtn(message, label) {
+function buildInterestBtn(message, label, analyticsType, analyticsId) {
   const rep = getActiveRep();
   const url = `https://wa.me/${rep.phone}?text=${encodeURIComponent(message)}`;
-  return `<a class="modal-action modal-action-interest" href="${url}" target="_blank" rel="noopener">
+  return `<a class="modal-action modal-action-interest" href="${url}" target="_blank" rel="noopener"
+      data-analytics-type="${analyticsType}" data-analytics-id="${analyticsId}" data-analytics-rep="${rep.name}">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm5.8 14.1c-.24.68-1.4 1.3-1.94 1.38-.5.08-1.11.11-1.79-.11-.41-.13-.94-.31-1.61-.6-2.84-1.23-4.69-4.09-4.83-4.28-.14-.19-1.15-1.53-1.15-2.92 0-1.39.73-2.07.99-2.35.26-.28.57-.35.76-.35.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.58.81 2 .88 2.14.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.28.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.61-.07.16-.19.7-.81.89-1.09.19-.28.37-.23.63-.14.26.1 1.65.78 1.94.92.28.14.47.21.54.33.07.12.07.68-.17 1.36Z"/></svg>
       ${label}
     </a>`;
@@ -710,7 +711,7 @@ function buildPlotModalHTML(plotId, plot) {
 
   const interestBtn =
     isByPlotBlock && plot.status === "متاحة"
-      ? buildInterestBtn(`مرحباً، أنا مهتم بقطعة رقم ${plot.plot}، بلوك ${plot.block}، مساحة ${formatNumber(plot.area)} م²، من مخطط العليا هيلز.`, "أنا مهتم بهذي القطعة")
+      ? buildInterestBtn(`مرحباً، أنا مهتم بقطعة رقم ${plot.plot}، بلوك ${plot.block}، مساحة ${formatNumber(plot.area)} م²، من مخطط العليا هيلز.`, "أنا مهتم بهذي القطعة", "plot", `${plot.block}__${plot.plot}`)
       : "";
 
   const soldBanner =
@@ -807,7 +808,7 @@ function buildBlockModalHTML(blockId, block) {
         <tbody>${rows}</tbody>
       </table>
     </div>
-    ${!isByPlot && block.status === "متاح" ? buildInterestBtn(`مرحباً، أنا مهتم ببلوك رقم ${blockId} كامل، مساحة ${formatNumber(block.total_area)} م²، من مخطط العليا هيلز.`, "أنا مهتم بهذا البلوك") : ""}
+    ${!isByPlot && block.status === "متاح" ? buildInterestBtn(`مرحباً، أنا مهتم ببلوك رقم ${blockId} كامل، مساحة ${formatNumber(block.total_area)} م²، من مخطط العليا هيلز.`, "أنا مهتم بهذا البلوك", "block", blockId) : ""}
     ${mapsBtn}
   `;
 }
@@ -1222,6 +1223,18 @@ function attachStatsBar() {
   renderStatsCounts();
 }
 
+function attachAnalyticsTracking() {
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".modal-action-interest");
+    if (!btn || typeof gtag !== "function") return;
+    gtag("event", "interest_click", {
+      item_type: btn.getAttribute("data-analytics-type"),
+      item_id: btn.getAttribute("data-analytics-id"),
+      rep: btn.getAttribute("data-analytics-rep"),
+    });
+  });
+}
+
 async function init() {
   await loadData();
   renderBlockOutlines();
@@ -1233,6 +1246,7 @@ async function init() {
   attachDebugToggle();
   attachSearch();
   attachStatsBar();
+  attachAnalyticsTracking();
   window.dispatchEvent(new Event("olaya-map-ready"));
 }
 
