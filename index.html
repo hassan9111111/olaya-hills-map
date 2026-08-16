@@ -7,7 +7,17 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-V1VCQV15WV');
+
+  // Resolve which sales rep's link this visit came from (?m=...), so
+  // every single visit — not just "أنا مهتم" clicks — can be broken down
+  // by rep in Analytics reports. Mirrors the same mapping app.js uses for
+  // WhatsApp routing, kept in sync manually since this runs before app.js.
+  var REP_NAMES = { abdulrahman: "عبدالرحمن", ali: "علي", hassan: "حسن" };
+  var repKey = new URLSearchParams(window.location.search).get("m");
+  var repName = REP_NAMES[repKey] || REP_NAMES["hassan"];
+
+  gtag('set', 'user_properties', { rep: repName });
+  gtag('config', 'G-V1VCQV15WV', { rep: repName });
 </script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
