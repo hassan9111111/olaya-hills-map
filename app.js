@@ -1103,7 +1103,11 @@ function computeStatsCounts() {
     blocksSold = 0,
     plotsAvailable = 0,
     residentialAvailable = 0,
-    commercialAvailable = 0;
+    commercialAvailable = 0,
+    eduAvailable = 0,
+    eduSold = 0,
+    plotLevelSold = 0,
+    plotLevelAvailable = 0;
 
   Object.values(blocksData).forEach((block) => {
     if (block.type !== "block") return;
@@ -1112,7 +1116,11 @@ function computeStatsCounts() {
         blocksAvailable++;
         if (block.usage === "سكني") residentialAvailable++;
         else if (block.usage === "تجاري") commercialAvailable++;
-      } else if (block.status === "مباع") blocksSold++;
+        else if (block.usage === "تعليمية/خدمية") eduAvailable++;
+      } else if (block.status === "مباع") {
+        blocksSold++;
+        if (block.usage === "تعليمية/خدمية") eduSold++;
+      }
     }
   });
 
@@ -1120,7 +1128,34 @@ function computeStatsCounts() {
     if (plot.status === "متاحة") plotsAvailable++;
   });
 
-  return { blocksAvailable, blocksSold, plotsAvailable, residentialAvailable, commercialAvailable };
+  // نسبة المباع (المعتمدة): تُحسب على مستوى القطعة الفردية، سكني وتجاري
+  // فقط — الوحدات التعليمية/الخدمية مستبعدة. لبلوكات "كامل"، القطعة ترث
+  // حالة البلوك ما لم يكن لها status صريح خاص بها (استثناء نادر).
+  Object.entries(plotsData).forEach(([pid, plot]) => {
+    const block = blocksData[plot.block];
+    if (!block || block.usage === "تعليمية/خدمية") return;
+    if (block.sale_type === "بالقطعة") {
+      if (plot.status === "مباعة") plotLevelSold++;
+      else if (plot.status === "متاحة") plotLevelAvailable++;
+    } else if (block.sale_type === "كامل") {
+      if (plot.status === "مباعة") plotLevelSold++;
+      else if (plot.status === "متاحة") plotLevelAvailable++;
+      else if (block.status === "مباع") plotLevelSold++;
+      else if (block.status === "متاح") plotLevelAvailable++;
+    }
+  });
+
+  return {
+    blocksAvailable,
+    blocksSold,
+    plotsAvailable,
+    residentialAvailable,
+    commercialAvailable,
+    eduAvailable,
+    eduSold,
+    plotLevelSold,
+    plotLevelAvailable,
+  };
 }
 
 // Smooth ease-out count-up (0 → target) — plays once on load, ~900ms,
@@ -1144,9 +1179,16 @@ function renderStatsCounts() {
   animateCountUp(document.getElementById("count-plots-available"), c.plotsAvailable);
   animateCountUp(document.getElementById("count-residential-available"), c.residentialAvailable);
   animateCountUp(document.getElementById("count-commercial-available"), c.commercialAvailable);
+  animateCountUp(document.getElementById("count-edu-available"), c.eduAvailable);
 
-  const totalWholeSale = c.blocksAvailable + c.blocksSold;
-  const soldPct = totalWholeSale > 0 ? Math.round((c.blocksSold / totalWholeSale) * 100) : 0;
+  // نسبة المباع تُحسب على بلوكات "سكني/تجاري" فقط — الوحدات
+  // التعليمية/الخدمية مستثناة عمداً من هالحسبة بناءً على طلب صريح.
+  // نسبة المباع (المعتمدة): على مستوى القطعة الفردية، سكني وتجاري فقط —
+  // النص المعروض للمستخدم "نسبة المباع" يبقى كما هو، تغيّرت فقط طريقة
+  // الحساب من عدّ البلوكات إلى عدّ القطع.
+  const pctSold = c.plotLevelSold;
+  const pctTotal = c.plotLevelSold + c.plotLevelAvailable;
+  const soldPct = pctTotal > 0 ? Math.round((pctSold / pctTotal) * 100) : 0;
   document.getElementById("stats-progress-fill").style.width = soldPct + "%";
   animateCountUp(document.getElementById("stats-progress-pct"), soldPct, 900, "%");
 }

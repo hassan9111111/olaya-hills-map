@@ -827,6 +827,16 @@ body.debug-mode .block-outline-halo {
   font-weight: 600;
 }
 
+.info-item-minor {
+  font-size: 0.88em;
+  font-weight: 500;
+  color: var(--text-muted, #6b6b6b);
+}
+
+.info-item-minor b {
+  font-size: 0.9em !important;
+}
+
 .info-item b {
   font-weight: 800;
   font-size: 13.5px;
