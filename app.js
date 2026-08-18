@@ -721,9 +721,10 @@ function buildPlotModalHTML(plotId, plot) {
         ? `<div class="sold-banner"><span class="dot"></span>هذه القطعة ضمن بلوك مباع بالكامل</div>`
         : "";
 
-  const notIndividualNote = isInAvailableWholeBlock
-    ? `<div class="info-note">هذه القطعة ضمن بلوك يُباع بالكامل ولا تُباع بشكل منفرد.</div>`
-    : "";
+  const notIndividualNote =
+    isInAvailableWholeBlock && plot.status !== "مباعة"
+      ? `<div class="info-note">هذه القطعة ضمن بلوك يُباع بالكامل ولا تُباع بشكل منفرد.</div>`
+      : "";
 
   return `
     ${soldBanner}
@@ -772,11 +773,12 @@ function buildBlockModalHTML(blockId, block) {
     .join("");
 
   const isByPlot = block.sale_type === "بالقطعة";
+  const hasAnyPlotStatus = block.plot_ids.some((pid) => plotsData[pid] && plotsData[pid].status);
   const soldBanner =
     !isByPlot && block.status === "مباع"
       ? `<div class="sold-banner"><span class="dot"></span>البلوك مباع بالكامل</div>`
       : "";
-  const extraCol = isByPlot ? "<th></th>" : "";
+  const extraCol = isByPlot || hasAnyPlotStatus ? "<th></th>" : "";
 
   return `
     ${soldBanner}
@@ -1176,7 +1178,13 @@ function renderPermanentStatus() {
       if (!target) return;
       block.plot_ids.forEach((pid) => {
         const plot = plotsData[pid];
-        if (plot && plot.polygon) addShape(target, plot.polygon);
+        if (!plot || !plot.polygon) return;
+        // A plot's own explicit status (rare exception: individually sold
+        // within an otherwise whole-sale block) always wins over the
+        // block-level default.
+        if (plot.status === "مباعة") addShape(dimFrag, plot.polygon);
+        else if (plot.status === "متاحة") addShape(boostFrag, plot.polygon);
+        else addShape(target, plot.polygon);
       });
     } else if (block.sale_type === "بالقطعة") {
       if (block.centroid) {
