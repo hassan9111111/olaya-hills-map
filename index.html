@@ -20,7 +20,7 @@
   gtag('config', 'G-V1VCQV15WV', { rep: repName });
 </script>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>مخطط العليا هيلز التفاعلي</title>
 
 <!-- Favicon -->
@@ -203,11 +203,18 @@
 
   <div class="map-container" id="map-container">
     <div class="map-hint" id="map-hint">اضغط على أي بلوك لعرض تفاصيله، أو أي قطعة داخل بلوكات البيع بالقطعة</div>
-    <picture>
-      <source srcset="map-background-optimized.webp" type="image/webp" />
-      <img class="bg-image" src="map-background-optimized.jpg" alt="مخطط العليا هيلز" draggable="false" fetchpriority="high" />
-    </picture>
-    <svg class="overlay" id="overlay" viewBox="0 0 1360.63 1345" preserveAspectRatio="xMidYMid meet">
+    <div class="map-zoom-controls" id="map-zoom-controls">
+      <button type="button" id="zoom-in-btn" aria-label="تكبير">+</button>
+      <button type="button" id="zoom-out-btn" aria-label="تصغير">−</button>
+      <button type="button" id="zoom-reset-btn" aria-label="إعادة ضبط">↺</button>
+    </div>
+    <div class="map-zoom-viewport" id="map-zoom-viewport">
+      <div class="map-zoom-inner" id="map-zoom-inner">
+        <picture>
+          <source srcset="map-background-optimized.webp" type="image/webp" />
+          <img class="bg-image" src="map-background-optimized.jpg" alt="مخطط العليا هيلز" draggable="false" fetchpriority="high" />
+        </picture>
+        <svg class="overlay" id="overlay" viewBox="0 0 1360.63 1345" preserveAspectRatio="xMidYMid meet">
       <defs>
         <!-- Cinematic "out of focus" look, built from two PRE-RENDERED
              full-resolution copies of the background (not a live SVG
@@ -254,6 +261,8 @@
       <g id="badge-ring-layer"></g>
       <g id="badges-layer"></g>
     </svg>
+      </div>
+    </div>
   </div>
 
   <div class="version-label">v1.0</div>

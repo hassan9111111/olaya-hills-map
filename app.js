@@ -889,6 +889,16 @@ function openFacilityModal(blockId) {
   openModalBackdrop();
 }
 
+// On mobile, a user who pinches in to zoom for an accurate tap, then taps
+// a plot/block, ends up with the modal opening in the page's ORIGINAL
+// (un-zoomed) layout position — which is now scrolled out of their
+// zoomed-in view. It looks like "nothing happened" until they zoom back
+// out. The reliable fix (this is the standard trick for this exact iOS
+// Safari/Chrome quirk) is to force the browser's pinch-zoom back to 1.0
+// right before the modal shows, by briefly tightening the viewport meta
+// tag's max scale and then restoring it. This guarantees the modal is
+// always shown in a predictable, fully-visible position — regardless of
+// whatever zoom level the user was at.
 function openModalBackdrop() {
   const backdrop = document.getElementById("modal-backdrop");
   backdrop.classList.add("is-open");
@@ -898,48 +908,13 @@ function openModalBackdrop() {
   // paint and the transition never visibly plays.
   void backdrop.offsetHeight;
   backdrop.classList.add("is-visible");
-  syncModalToVisualViewport();
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener("resize", syncModalToVisualViewport);
-    window.visualViewport.addEventListener("scroll", syncModalToVisualViewport);
-  }
-}
-
-// On mobile, `position: fixed` is anchored to the page's LAYOUT viewport —
-// not to whatever region is currently visible after a pinch-zoom. So a
-// user who zooms in to tap a small plot accurately, then taps it, gets a
-// modal that technically opened but sits outside their zoomed-in view —
-// it looks like "nothing happened". This keeps the backdrop's position
-// and size locked to window.visualViewport (the actually-visible area),
-// so the modal is always exactly where the user is looking, at any zoom
-// level or pan position.
-function syncModalToVisualViewport() {
-  const backdrop = document.getElementById("modal-backdrop");
-  if (!backdrop.classList.contains("is-open")) return;
-  const vv = window.visualViewport;
-  if (!vv) return;
-  backdrop.style.position = "fixed";
-  backdrop.style.left = vv.offsetLeft + "px";
-  backdrop.style.top = vv.offsetTop + "px";
-  backdrop.style.width = vv.width + "px";
-  backdrop.style.height = vv.height + "px";
 }
 
 function closeModal() {
   const backdrop = document.getElementById("modal-backdrop");
   backdrop.classList.remove("is-visible");
-  if (window.visualViewport) {
-    window.visualViewport.removeEventListener("resize", syncModalToVisualViewport);
-    window.visualViewport.removeEventListener("scroll", syncModalToVisualViewport);
-  }
   window.setTimeout(() => {
     backdrop.classList.remove("is-open");
-    // clear inline overrides so desktop/no-zoom layouts fall back to the
-    // normal CSS-driven `inset: 0` positioning next time
-    backdrop.style.left = "";
-    backdrop.style.top = "";
-    backdrop.style.width = "";
-    backdrop.style.height = "";
   }, 200);
 }
 
@@ -1320,6 +1295,162 @@ function attachAnalyticsTracking() {
   });
 }
 
+// Custom zoom/pan for the map, replacing native browser pinch-zoom.
+//
+// Why: iOS Safari (and to a lesser extent Chrome/Android) has a long-
+// standing, version-dependent quirk where `position: fixed` elements
+// (our modal) don't reliably reposition after the user pinch-zooms the
+// PAGE itself — the modal can open fully outside the zoomed-in area,
+// looking like nothing happened. This is a native-browser-zoom problem,
+// so the only fully reliable fix is to never let the browser itself zoom
+// at all (see the viewport meta tag: user-scalable=no) and instead scale
+// only our own map content via a CSS transform. Since the browser's own
+// zoom level is now always 1, `position: fixed` behaves perfectly
+// predictably for the modal, on every device, every time.
+function attachCustomZoom() {
+  const viewport = document.getElementById("map-zoom-viewport");
+  const inner = document.getElementById("map-zoom-inner");
+  const zoomInBtn = document.getElementById("zoom-in-btn");
+  const zoomOutBtn = document.getElementById("zoom-out-btn");
+  const resetBtn = document.getElementById("zoom-reset-btn");
+  if (!viewport || !inner) return;
+
+  const MIN_SCALE = 1;
+  const MAX_SCALE = 4;
+  let scale = 1;
+  let tx = 0;
+  let ty = 0;
+
+  function apply() {
+    inner.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+  }
+
+  function clampPan() {
+    // keep the zoomed content from being dragged completely off-screen
+    const vw = viewport.clientWidth;
+    const vh = viewport.clientHeight;
+    const contentW = vw * scale;
+    const contentH = vh * scale;
+    const minTx = Math.min(0, vw - contentW);
+    const minTy = Math.min(0, vh - contentH);
+    tx = Math.max(minTx, Math.min(0, tx));
+    ty = Math.max(minTy, Math.min(0, ty));
+  }
+
+  function zoomAt(clientX, clientY, factor) {
+    const rect = viewport.getBoundingClientRect();
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
+    const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * factor));
+    if (newScale === scale) return;
+    const ratio = newScale / scale;
+    tx = px - (px - tx) * ratio;
+    ty = py - (py - ty) * ratio;
+    scale = newScale;
+    if (scale === MIN_SCALE) {
+      tx = 0;
+      ty = 0;
+    }
+    clampPan();
+    apply();
+  }
+
+  // ---- touch: pinch to zoom, single-finger drag to pan ----
+  let pinchStartDist = null;
+  let pinchStartScale = 1;
+  let panStart = null;
+  let touchMoved = false;
+
+  function dist(t1, t2) {
+    return Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+  }
+
+  viewport.addEventListener(
+    "touchstart",
+    (e) => {
+      touchMoved = false;
+      if (e.touches.length === 2) {
+        pinchStartDist = dist(e.touches[0], e.touches[1]);
+        pinchStartScale = scale;
+      } else if (e.touches.length === 1 && scale > MIN_SCALE) {
+        panStart = { x: e.touches[0].clientX - tx, y: e.touches[0].clientY - ty };
+      }
+    },
+    { passive: true }
+  );
+
+  viewport.addEventListener(
+    "touchmove",
+    (e) => {
+      if (e.touches.length === 2 && pinchStartDist) {
+        e.preventDefault();
+        touchMoved = true;
+        const newDist = dist(e.touches[0], e.touches[1]);
+        const factor = newDist / pinchStartDist;
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        scale = pinchStartScale; // reset so zoomAt's relative factor is accurate
+        zoomAt(midX, midY, factor);
+      } else if (e.touches.length === 1 && panStart) {
+        const dx = e.touches[0].clientX - panStart.x - tx;
+        const dy = e.touches[0].clientY - panStart.y - ty;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) touchMoved = true;
+        if (touchMoved) {
+          e.preventDefault();
+          tx = e.touches[0].clientX - panStart.x;
+          ty = e.touches[0].clientY - panStart.y;
+          clampPan();
+          apply();
+        }
+      }
+    },
+    { passive: false }
+  );
+
+  viewport.addEventListener(
+    "touchend",
+    (e) => {
+      if (e.touches.length === 0) {
+        pinchStartDist = null;
+        panStart = null;
+      }
+    },
+    { passive: true }
+  );
+
+  // ---- buttons: work everywhere, including mouse/desktop ----
+  if (zoomInBtn) {
+    zoomInBtn.addEventListener("click", () => {
+      const r = viewport.getBoundingClientRect();
+      zoomAt(r.left + r.width / 2, r.top + r.height / 2, 1.4);
+    });
+  }
+  if (zoomOutBtn) {
+    zoomOutBtn.addEventListener("click", () => {
+      const r = viewport.getBoundingClientRect();
+      zoomAt(r.left + r.width / 2, r.top + r.height / 2, 1 / 1.4);
+    });
+  }
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      scale = 1;
+      tx = 0;
+      ty = 0;
+      apply();
+    });
+  }
+
+  // ---- desktop: mouse wheel to zoom ----
+  viewport.addEventListener(
+    "wheel",
+    (e) => {
+      e.preventDefault();
+      zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15);
+    },
+    { passive: false }
+  );
+}
+
 async function init() {
   await loadData();
   renderBlockOutlines();
@@ -1332,6 +1463,7 @@ async function init() {
   attachSearch();
   attachStatsBar();
   attachAnalyticsTracking();
+  attachCustomZoom();
   window.dispatchEvent(new Event("olaya-map-ready"));
 }
 

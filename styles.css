@@ -29,6 +29,74 @@ body {
   line-height: 0; /* removes inline-image gap */
 }
 
+/* Custom zoom system — replaces native browser pinch-zoom entirely (see
+   map-zoom-inner comment in app.js for why). The viewport clips to the
+   normal map area; the inner layer is what actually scales/pans via a
+   CSS transform, driven by our own touch/mouse handlers. */
+.map-zoom-viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-y; /* normal vertical page scroll stays available;
+                          our JS takes over specifically for pinch (2
+                          fingers) and panning a zoomed-in view */
+}
+
+.map-zoom-inner {
+  position: relative;
+  width: 100%;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.map-zoom-controls {
+  position: absolute;
+  z-index: 40;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.map-zoom-controls button {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a2b3c;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-zoom-controls button:active {
+  background: #f0f0f0;
+}
+
+#zoom-reset-btn {
+  font-size: 15px;
+}
+
+@media (max-width: 600px) {
+  .map-zoom-controls {
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    left: calc(12px + env(safe-area-inset-left, 0px));
+  }
+  .map-zoom-controls button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 .bg-image {
   width: 100%;
   height: auto;
