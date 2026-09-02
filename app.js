@@ -898,13 +898,48 @@ function openModalBackdrop() {
   // paint and the transition never visibly plays.
   void backdrop.offsetHeight;
   backdrop.classList.add("is-visible");
+  syncModalToVisualViewport();
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", syncModalToVisualViewport);
+    window.visualViewport.addEventListener("scroll", syncModalToVisualViewport);
+  }
+}
+
+// On mobile, `position: fixed` is anchored to the page's LAYOUT viewport —
+// not to whatever region is currently visible after a pinch-zoom. So a
+// user who zooms in to tap a small plot accurately, then taps it, gets a
+// modal that technically opened but sits outside their zoomed-in view —
+// it looks like "nothing happened". This keeps the backdrop's position
+// and size locked to window.visualViewport (the actually-visible area),
+// so the modal is always exactly where the user is looking, at any zoom
+// level or pan position.
+function syncModalToVisualViewport() {
+  const backdrop = document.getElementById("modal-backdrop");
+  if (!backdrop.classList.contains("is-open")) return;
+  const vv = window.visualViewport;
+  if (!vv) return;
+  backdrop.style.position = "fixed";
+  backdrop.style.left = vv.offsetLeft + "px";
+  backdrop.style.top = vv.offsetTop + "px";
+  backdrop.style.width = vv.width + "px";
+  backdrop.style.height = vv.height + "px";
 }
 
 function closeModal() {
   const backdrop = document.getElementById("modal-backdrop");
   backdrop.classList.remove("is-visible");
+  if (window.visualViewport) {
+    window.visualViewport.removeEventListener("resize", syncModalToVisualViewport);
+    window.visualViewport.removeEventListener("scroll", syncModalToVisualViewport);
+  }
   window.setTimeout(() => {
     backdrop.classList.remove("is-open");
+    // clear inline overrides so desktop/no-zoom layouts fall back to the
+    // normal CSS-driven `inset: 0` positioning next time
+    backdrop.style.left = "";
+    backdrop.style.top = "";
+    backdrop.style.width = "";
+    backdrop.style.height = "";
   }, 200);
 }
 
