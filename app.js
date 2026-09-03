@@ -891,33 +891,29 @@ function openFacilityModal(blockId) {
 
 function openModalBackdrop() {
   const backdrop = document.getElementById("modal-backdrop");
-  const modal = document.getElementById("modal");
 
-  // Position the panel at the user's CURRENT scroll position — not a
-  // fixed slot in the page. `position: fixed` is unreliable on iOS
-  // Safari during pinch-zoom (it's actually positioned relative to the
-  // LAYOUT viewport, same as a plain `position: absolute` element would
-  // be — see https://www.quirksmode.org/blog/archives/2010/12/the_fifth_posit.html).
-  // Since absolute positioning is what iOS effectively falls back to
-  // anyway, we use it directly and compute the right offset ourselves,
-  // so the panel appears immediately in view — right where the user
-  // already is looking — instead of behaving unpredictably or requiring
-  // a scroll to reach it.
+  // Position the panel at the user's CURRENT visible location — not a
+  // fixed slot in the page, and NOT based on window.scrollY/innerHeight
+  // (those reflect the un-zoomed LAYOUT viewport, which is the wrong
+  // coordinate space once the user has pinch-zoomed: it's what caused
+  // the panel to render far outside the visible area on a real device).
+  // window.visualViewport gives the actual on-screen position and size
+  // under any zoom/pan state, which is exactly what's needed here.
+  const vv = window.visualViewport;
+  const pageTop = vv ? vv.pageTop : window.scrollY || document.documentElement.scrollTop;
+  const visibleH = vv ? vv.height : window.innerHeight;
+
+  backdrop.style.top = pageTop + "px";
+  backdrop.style.minHeight = visibleH + "px";
+  // A small top margin so the card doesn't touch the very edge of the
+  // screen, rather than trying to perfectly vertically center it — that
+  // required measuring the card's rendered height on the same frame it
+  // becomes visible, which proved unreliable on real devices.
+  backdrop.style.paddingTop = Math.max(16, visibleH * 0.08) + "px";
+
   backdrop.classList.add("is-open");
   void backdrop.offsetHeight;
   backdrop.classList.add("is-visible");
-
-  const scrollY = window.scrollY || document.documentElement.scrollTop;
-  const viewportH = window.innerHeight;
-  backdrop.style.top = scrollY + "px";
-  backdrop.style.minHeight = viewportH + "px";
-
-  // Center the panel itself within the current viewport slice
-  requestAnimationFrame(() => {
-    const modalH = modal.offsetHeight;
-    const offset = Math.max(12, (viewportH - modalH) / 2);
-    modal.style.marginTop = offset + "px";
-  });
 }
 
 function closeModal() {
@@ -927,7 +923,7 @@ function closeModal() {
     backdrop.classList.remove("is-open");
     backdrop.style.top = "";
     backdrop.style.minHeight = "";
-    document.getElementById("modal").style.marginTop = "";
+    backdrop.style.paddingTop = "";
   }, 200);
 }
 
