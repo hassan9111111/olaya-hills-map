@@ -212,14 +212,18 @@ body {
 /* ===== Modal ===== */
 .inline-panel {
   display: none;
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 16px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  background: rgba(0, 0, 0, 0.42);
+  align-items: flex-start;
+  justify-content: center;
+  padding: 16px;
 }
 
 .inline-panel.is-open {
-  display: block;
+  display: flex;
 }
 
 .modal {
@@ -230,9 +234,9 @@ body {
   padding: 24px;
   max-width: 480px;
   width: 100%;
-  margin: 14px auto 24px;
+  margin-bottom: 24px;
   max-height: none;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   direction: rtl;
   text-align: right;
   opacity: 0;

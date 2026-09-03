@@ -514,6 +514,9 @@ function attachInteractions() {
   });
 
   document.getElementById("modal-close").addEventListener("click", closeModal);
+  document.getElementById("modal-backdrop").addEventListener("click", (e) => {
+    if (e.target.id === "modal-backdrop") closeModal();
+  });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeModal();
   });
@@ -888,19 +891,33 @@ function openFacilityModal(blockId) {
 
 function openModalBackdrop() {
   const backdrop = document.getElementById("modal-backdrop");
+  const modal = document.getElementById("modal");
+
+  // Position the panel at the user's CURRENT scroll position — not a
+  // fixed slot in the page. `position: fixed` is unreliable on iOS
+  // Safari during pinch-zoom (it's actually positioned relative to the
+  // LAYOUT viewport, same as a plain `position: absolute` element would
+  // be — see https://www.quirksmode.org/blog/archives/2010/12/the_fifth_posit.html).
+  // Since absolute positioning is what iOS effectively falls back to
+  // anyway, we use it directly and compute the right offset ourselves,
+  // so the panel appears immediately in view — right where the user
+  // already is looking — instead of behaving unpredictably or requiring
+  // a scroll to reach it.
   backdrop.classList.add("is-open");
-  // Force a synchronous style flush so the browser commits the "closed"
-  // (pre-transition) state before "is-visible" is added — otherwise the
-  // display and opacity/transform changes can get batched into a single
-  // paint and the transition never visibly plays.
   void backdrop.offsetHeight;
   backdrop.classList.add("is-visible");
-  // The panel is now a normal part of the page rather than a floating
-  // overlay, so we bring it to the user by scrolling to it — this is
-  // what replaces "the modal appears on screen" from the old fixed-
-  // position approach, and it works identically at any zoom level since
-  // it's just standard in-page scrolling.
-  backdrop.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  const scrollY = window.scrollY || document.documentElement.scrollTop;
+  const viewportH = window.innerHeight;
+  backdrop.style.top = scrollY + "px";
+  backdrop.style.minHeight = viewportH + "px";
+
+  // Center the panel itself within the current viewport slice
+  requestAnimationFrame(() => {
+    const modalH = modal.offsetHeight;
+    const offset = Math.max(12, (viewportH - modalH) / 2);
+    modal.style.marginTop = offset + "px";
+  });
 }
 
 function closeModal() {
@@ -908,6 +925,9 @@ function closeModal() {
   backdrop.classList.remove("is-visible");
   window.setTimeout(() => {
     backdrop.classList.remove("is-open");
+    backdrop.style.top = "";
+    backdrop.style.minHeight = "";
+    document.getElementById("modal").style.marginTop = "";
   }, 200);
 }
 
