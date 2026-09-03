@@ -514,9 +514,6 @@ function attachInteractions() {
   });
 
   document.getElementById("modal-close").addEventListener("click", closeModal);
-  document.getElementById("modal-backdrop").addEventListener("click", (e) => {
-    if (e.target.id === "modal-backdrop") closeModal();
-  });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeModal();
   });
@@ -898,6 +895,12 @@ function openModalBackdrop() {
   // paint and the transition never visibly plays.
   void backdrop.offsetHeight;
   backdrop.classList.add("is-visible");
+  // The panel is now a normal part of the page rather than a floating
+  // overlay, so we bring it to the user by scrolling to it — this is
+  // what replaces "the modal appears on screen" from the old fixed-
+  // position approach, and it works identically at any zoom level since
+  // it's just standard in-page scrolling.
+  backdrop.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function closeModal() {

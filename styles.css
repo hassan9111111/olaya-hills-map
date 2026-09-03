@@ -210,46 +210,39 @@ body {
 }
 
 /* ===== Modal ===== */
-.modal-backdrop {
+.inline-panel {
   display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0);
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 16px;
-  transition: background 0.18s ease;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
-.modal-backdrop.is-open {
-  display: flex;
-}
-
-.modal-backdrop.is-open.is-visible {
-  background: rgba(0, 0, 0, 0.5);
+.inline-panel.is-open {
+  display: block;
 }
 
 .modal {
   position: relative;
   background: var(--modal-bg);
   border-radius: var(--modal-radius);
+  border-top: 4px solid #c9962f;
   padding: 24px;
   max-width: 480px;
   width: 100%;
-  max-height: 82vh;
-  overflow-y: auto;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  margin: 14px auto 24px;
+  max-height: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   direction: rtl;
   text-align: right;
   opacity: 0;
-  transform: scale(0.96) translateY(6px);
+  transform: translateY(8px);
   transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.modal-backdrop.is-visible .modal {
+.inline-panel.is-visible .modal {
   opacity: 1;
-  transform: scale(1) translateY(0);
+  transform: translateY(0);
 }
 
 .modal-close {
@@ -528,22 +521,16 @@ body.debug-mode .block-outline-halo {
 
 /* ===== Mobile & small-tablet adjustments ===== */
 @media (max-width: 600px) {
-  .modal-backdrop {
-    padding: 0;
-    align-items: flex-end; /* sheet-style modal is easier to reach one-handed */
+  .inline-panel {
+    padding: 0 8px;
   }
 
   .modal {
     max-width: 100%;
     width: 100%;
-    max-height: 75vh;
-    border-radius: 20px 20px 0 0;
-    padding: 20px 18px calc(18px + env(safe-area-inset-bottom, 0px));
-    transform: translateY(100%);
-  }
-
-  .modal-backdrop.is-visible .modal {
-    transform: translateY(0);
+    max-height: none;
+    border-radius: 14px;
+    padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px));
   }
 
   .modal-title {
@@ -575,12 +562,10 @@ body.debug-mode .block-outline-halo {
   }
 }
 
-/* Short landscape phones: cap modal height so it never gets clipped by the
-   keyboard-less viewport, and shrink the top padding a bit. */
+/* Short landscape phones: shrink the modal's internal spacing a bit so
+   it doesn't feel oversized on a short viewport. Height itself is no
+   longer capped — the panel is in-flow now, so there's nothing to clip. */
 @media (max-height: 420px) and (orientation: landscape) {
-  .modal {
-    max-height: 94vh;
-  }
   .modal-stats {
     margin-bottom: 10px;
     padding-bottom: 10px;

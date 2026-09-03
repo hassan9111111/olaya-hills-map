@@ -258,7 +258,15 @@
 
   <div class="version-label">v1.0</div>
 
-  <div class="modal-backdrop" id="modal-backdrop">
+  <!-- The details panel is a NORMAL part of the page (not position:fixed).
+       It sits right after the map, and JS scrollIntoView()'s it open. This
+       sidesteps a long-standing iOS Safari/Chrome quirk where fixed-
+       position elements don't reliably reposition after the user
+       pinch-zooms the page — the panel could open fully outside the
+       zoomed-in view, looking like nothing happened. Since this panel is
+       never "fixed" to begin with, that whole class of bug can't occur:
+       it's just wherever the page currently is, on every device. -->
+  <div class="inline-panel" id="modal-backdrop">
     <div class="modal" id="modal" role="dialog" aria-modal="true">
       <button class="modal-close" id="modal-close" aria-label="إغلاق">✕</button>
       <div id="modal-body"></div>
