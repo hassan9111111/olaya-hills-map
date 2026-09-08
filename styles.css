@@ -37,6 +37,26 @@ body {
   pointer-events: none; /* all interaction happens on the SVG overlay */
 }
 
+/* On desktop/laptop screens, fit the whole map within the visible
+   viewport height on first load — same clarity/detail, just scaled so
+   the user sees the full plan immediately instead of needing to scroll
+   to see the rest of it. Mobile is untouched (natural width-based
+   sizing stays, since the small-screen scrolling experience is normal
+   and expected there). */
+@media (min-width: 901px) {
+  .map-container {
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+    max-width: 100%;
+  }
+  .bg-image {
+    width: auto;
+    height: calc(100vh - 190px);
+    max-height: calc(100vh - 190px);
+  }
+}
+
 .overlay {
   position: absolute;
   top: 0;
