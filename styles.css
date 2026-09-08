@@ -37,69 +37,6 @@ body {
   pointer-events: none; /* all interaction happens on the SVG overlay */
 }
 
-/* On desktop/laptop screens, fit the whole map within the visible
-   viewport height on first load — same clarity/detail, just scaled so
-   the user sees the full plan immediately instead of needing to scroll
-   to see the rest of it. Mobile is untouched (natural width-based
-   sizing stays, since the small-screen scrolling experience is normal
-   and expected there). */
-@media (min-width: 901px) {
-  body {
-    position: relative;
-  }
-
-  /* The stats/legend/search cluster becomes a floating overlay ON TOP
-     of the map, instead of pushing it down the page — this reclaims
-     nearly the full viewport height for the map itself, which is what
-     actually matters to the user, rather than shrinking the map to
-     make room for chrome around it. */
-  .info-bar,
-  .map-legend-bar,
-  .search-bar {
-    position: absolute;
-    left: 0;
-    right: 0;
-    z-index: 50;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(3px);
-    pointer-events: none; /* let clicks pass through to the map
-      underneath everywhere except the actual interactive controls
-      (search input etc.), re-enabled explicitly below */
-  }
-  .info-bar { top: 0; }
-  .map-legend-bar { top: 84px; }
-  .search-bar {
-    top: 108px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    pointer-events: none;
-  }
-  .search-bar input,
-  .search-bar button,
-  .search-bar .search-input-wrap,
-  .search-bar #search-results {
-    pointer-events: auto;
-  }
-
-  .map-hint {
-    top: 172px !important;
-  }
-
-  .map-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    width: fit-content;
-    max-width: 100%;
-    padding-top: 0;
-  }
-  .bg-image {
-    width: auto;
-    height: auto;
-    max-width: min(1400px, 100vw);
-    max-height: calc(100vh - 75px);
-  }
-}
-
 .overlay {
   position: absolute;
   top: 0;
@@ -279,15 +216,10 @@ body {
   left: 0;
   right: 0;
   z-index: 500;
-  background: none;
+  background: rgba(0, 0, 0, 0.42);
   align-items: flex-start;
   justify-content: center;
   padding: 16px;
-  pointer-events: none;
-}
-
-.inline-panel .modal {
-  pointer-events: auto;
 }
 
 .inline-panel.is-open {
