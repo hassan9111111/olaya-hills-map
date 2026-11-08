@@ -34,6 +34,7 @@ const BADGE_RADIUS = 6; // pt, small enough to avoid covering nearby plot center
 const SALES_REPS = {
   abdulrahman: { name: "عبدالرحمن", phone: "966558075216" },
   ali: { name: "علي", phone: "966550017243" },
+  waleed: { name: "وليد", phone: "966550507193" },
   hassan: { name: "حسن", phone: "966504669338" },
 };
 const DEFAULT_REP_KEY = "hassan";
